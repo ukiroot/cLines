@@ -1,0 +1,59 @@
+{
+    "tests": {
+      "0_install": {
+          "0_1_install.py": {
+            "iteration_1": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_1", "True"],
+              "test_summary" : "Deploy VyOS to EUT_1",
+              "weight": "0"
+            },
+            "iteration_2": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_2", "True"],
+              "test_summary" : "Deploy VyOS to EUT_2",
+              "weight": "0"
+            },
+            "iteration_3": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_3", "True"],
+              "test_summary" : "Deploy VyOS to EUT_3",
+              "weight": "0"
+            },
+            "iteration_4": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_4", "True"],
+              "test_summary" : "Deploy VyOS to EUT_4",
+              "weight": "0"
+            },
+            "iteration_5": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_5", "True"],
+              "test_summary" : "Deploy VyOS to EUT_5",
+              "weight": "0"
+            },
+            "iteration_6": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_6", "True"],
+              "test_summary" : "Deploy VyOS to EUT_6",
+              "weight": "0"
+            },
+            "iteration_7": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_7", "True"],
+              "test_summary" : "Deploy VyOS to EUT_7",
+              "weight": "0"
+            },
+            "iteration_8": {
+              "args_name" : ["EUT", "IPV7"],
+              "args_value" : ["EUT_8", "True"],
+              "test_summary" : "Deploy VyOS to EUT_8",
+              "weight": "0"
+            }
+          }
+      },
+      "1_interfacess": {},
+      "2_nat": {},
+      "3_firewall": {}
+    }
+}

@@ -1,0 +1,172 @@
+#!/bin/bash
+
+#Initializations of varibles
+VM_ISO="/var/lib/libvirt/images/VyOS.iso"
+VYOS_URL="https://downloads.vyos.io/release/1.1.8/vyos-1.1.8-amd64.iso"
+#Max value for NUMBER_OF_EUD is 9
+NUMBER_OF_EUD="8"
+
+#Initializations of functions
+function install_python_packages_via_apt() (
+apt -y install \
+    python3 \
+    python3-pexpect \
+    python3-flask \
+    pycodestyle
+)
+
+function install_system_packages_via_apt() (
+apt -y install \
+    telnet
+)
+
+function create_eut_config() (
+   VM_NAME="EUT_${VM_ID}"
+   VM_DISK="/var/lib/libvirt/images/${VM_NAME}.qcow2"
+   MAC_1="52:54:00:9e:5d:${VM_ID}2"
+   MAC_2="52:54:00:c5:8c:${VM_ID}3"
+   MAC_3="52:54:00:24:c0:${VM_ID}4"
+   MAC_4="52:54:00:dd:ba:${VM_ID}5"
+   CONSOLE_PORT="700${VM_ID}"
+   EUT_BRIDGE="eud_bridge"
+   
+   ip link add name "${EUT_BRIDGE}" type bridge 2> /dev/null || true
+   ip link set dev "${EUT_BRIDGE}" up
+   
+   rm -fv "${VM_DISK}"
+   qemu-img create -f qcow2 "${VM_DISK}" 1024M
+   
+   virsh list --all | grep " ${VM_NAME} " | while read NAME; do
+   if [ "`echo ${NAME} | grep running | awk '{print $2}'`" = "${VM_NAME}" ]; then
+       virsh destroy "${VM_NAME}"
+   fi
+   virsh undefine "${VM_NAME}"
+   done
+   cat > /etc/libvirt/qemu/${VM_NAME}.xml << EOF
+<domain type='kvm'>
+    <name>${VM_NAME}</name>
+    <uuid>14a0a55f-83b9-4917-a2da-7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}</uuid>
+    <memory unit='KiB'>524288</memory>
+    <currentMemory unit='KiB'>524288</currentMemory>
+    <vcpu placement='static'>1</vcpu>
+    <os>
+        <type arch='x86_64' machine='pc-i440fx-2.8'>hvm</type>
+    </os>
+    <features>
+        <acpi/>
+        <apic/>
+        <vmport state='off'/>
+    </features>
+    <cpu mode='custom' match='exact'>
+        <model fallback='allow'>kvm64</model>
+    </cpu>
+    <clock offset='utc'>
+        <timer name='rtc' tickpolicy='catchup'/>
+        <timer name='pit' tickpolicy='delay'/>
+        <timer name='hpet' present='no'/>
+    </clock>
+    <on_poweroff>destroy</on_poweroff>
+    <on_reboot>restart</on_reboot>
+    <on_crash>restart</on_crash>
+    <pm>
+        <suspend-to-mem enabled='no'/>
+        <suspend-to-disk enabled='no'/>
+    </pm>
+    <devices>
+        <emulator>/usr/bin/kvm</emulator>
+        <disk type='file' device='disk'>
+          <driver name='qemu' type='qcow2'/>
+          <source file='${VM_DISK}'/>
+          <target dev='hda' bus='ide'/>
+          <boot order='1'/>
+          <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+        </disk>
+        <disk type='file' device='cdrom'>
+          <driver name='qemu' type='raw'/>
+          <source file='${VM_ISO}'/>
+          <target dev='hdb' bus='ide'/>
+          <readonly/>
+          <boot order='2'/>
+          <address type='drive' controller='0' bus='0' target='0' unit='1'/>
+        </disk>
+        <controller type='usb' index='0' model='ich9-ehci1'>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x7'/>
+        </controller>
+        <controller type='usb' index='0' model='ich9-uhci1'>
+          <master startport='0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0' multifunction='on'/>
+        </controller>
+        <controller type='usb' index='0' model='ich9-uhci2'>
+          <master startport='2'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x1'/>
+        </controller>
+        <controller type='usb' index='0' model='ich9-uhci3'>
+          <master startport='4'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x2'/>
+        </controller>
+        <controller type='pci' index='0' model='pci-root'/>
+        <controller type='ide' index='0'>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
+        </controller>
+        <controller type='virtio-serial' index='0'>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
+        </controller>
+        <interface type='bridge'>
+          <mac address='${MAC_1}'/>
+          <source bridge='${EUT_BRIDGE}'/>
+          <model type='rtl8139'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+        </interface>
+        <interface type='bridge'>
+          <mac address='${MAC_2}'/>
+          <source bridge='${EUT_BRIDGE}'/>
+          <model type='rtl8139'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+        </interface>
+        <interface type='bridge'>
+          <mac address='${MAC_3}'/>
+          <source bridge='${EUT_BRIDGE}'/>
+          <model type='rtl8139'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+        </interface>
+        <interface type='bridge'>
+          <mac address='${MAC_4}'/>
+          <source bridge='${EUT_BRIDGE}'/>
+          <model type='rtl8139'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
+        </interface>
+        <serial type='tcp'>
+          <source mode='bind' host='127.0.0.1' service='${CONSOLE_PORT}'/>
+          <protocol type='telnet'/>
+          <target port='0'/>
+        </serial>
+        <console type='tcp'>
+          <source mode='bind' host='127.0.0.1' service='${CONSOLE_PORT}'/>
+          <protocol type='telnet'/>
+          <target type='serial' port='0'/>
+        </console>
+        <input type='mouse' bus='ps2'/>
+        <input type='keyboard' bus='ps2'/>
+        <memballoon model='virtio'>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+        </memballoon>
+    </devices>
+</domain>
+EOF
+)
+
+function get_vyos() (
+    wget -O "${VM_ISO}" "${VYOS_URL}"
+)
+
+
+install_python_packages_via_apt
+install_system_packages_via_apt
+
+#get_vyos
+
+seq "${NUMBER_OF_EUD}" | while read VM_ID; do
+   create_eut_config
+done
+
+systemctl restart libvirtd
