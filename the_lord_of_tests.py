@@ -44,7 +44,6 @@ def get_list_if_tests(config):
                     iteration +
                     '.log'
                 )
-                print(iteration_log_path)
                 test_exec = (
                     python_inter +
                     test_path +
@@ -54,14 +53,9 @@ def get_list_if_tests(config):
                     euts.space_char +
                     str(config[group][test][iteration]['args_value'])
                 )
-                print(test_exec)
                 test_exec = prepare_test_exec(test_exec)
-                print(test_exec)
                 os.system(test_exec)
-#                os.system(
-#                    "nohup " +
-#                    test_exec +
-#                    " &")
+
 
 
 if __name__ == '__main__':
