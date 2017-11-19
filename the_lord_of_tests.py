@@ -2,6 +2,7 @@ import json
 import sys
 import os
 import datetime
+import time
 import subprocess
 from lib import euts
 
@@ -33,8 +34,8 @@ def stop_services(list_of_services):
 
 
 def prepare_test_exec(command):
-    command = command.replace('[', '"')
-    command = command.replace(']', '"')
+    command = command.replace('[', '')
+    command = command.replace(']', '')
     command = command.replace("'", "")
     return command
 
@@ -51,7 +52,7 @@ def get_list_of_tests(config):
                     test
                 )
                 test_path = (
-                    ' tests/' +
+                    'tests/' +
                     peace_of_test_path
                 )
                 iteration_log_path = (
@@ -62,23 +63,39 @@ def get_list_of_tests(config):
                     iteration +
                     '.log'
                 )
-                test_exec = (
-                    python_inter +
-                    test_path +
-                    iteration_log_path +
-                    euts.space_char +
-                    str(config[group][test][iteration]['args_name']) +
-                    euts.space_char +
-                    str(config[group][test][iteration]['args_value'])
-                )
-                test_exec = prepare_test_exec(test_exec)
-                os.system(test_exec)
+                args_name = str(config[group][test][iteration]['args_name'])
+                args_value = str(config[group][test][iteration]['args_value'])
+                test_exec = [
+                    python_inter,
+                    test_path,
+                    iteration_log_path,
+                    prepare_test_exec(args_name),
+                    prepare_test_exec(args_value)
+                ]
+                list_of_active_tests.append(subprocess.Popen(test_exec))
+    while True:
+        print("len of tests is " + str(len(list_of_active_tests)))
+        if len(list_of_active_tests) != 0:
+            for test_proc in list_of_active_tests:
+                print(test_proc)
+                time.sleep(1)
+                poll = test_proc.poll()
+                if poll is None:
+                    print(test_proc)
+                    print(poll)
+                    time.sleep(2)
+                else:
+                    print("Process" + "test_proc" + " is over")
+                    list_of_active_tests.remove(test_proc)
+        else:
+            break
 
 
 if __name__ == '__main__':
     #  Block of variables
     timestamp = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M/')
     list_of_services_proc = []
+    list_of_active_tests = []
     path_from_root = os.path.abspath(os.path.dirname(sys.argv[0]))
     python_inter = '/usr/bin/python3'
     path_to_logs_dir = path_from_root + "/logs/"
