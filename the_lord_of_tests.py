@@ -56,7 +56,7 @@ def get_list_of_tests(config):
                     peace_of_test_path
                 )
                 iteration_log_path = (
-                    ' logs/' +
+                    'logs/' +
                     timestamp +
                     peace_of_test_path +
                     euts.slash_char +
