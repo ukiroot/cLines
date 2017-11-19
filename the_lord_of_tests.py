@@ -27,7 +27,6 @@ def start_pool_of_resources(log):
 
 
 def stop_services(list_of_services):
-    print(list_of_services)
     for service in list_of_services:
         service_proc = (service.get(*service))
         service_proc.kill()
