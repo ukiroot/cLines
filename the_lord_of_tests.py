@@ -93,7 +93,7 @@ def get_list_of_tests(config):
 
 if __name__ == '__main__':
     #  Block of variables
-    timestamp = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M/')
+    timestamp = datetime.datetime.now().strftime('%Y/%m/%d_%H_%M/')
     list_of_services_proc = []
     list_of_active_tests = []
     path_from_root = os.path.abspath(os.path.dirname(sys.argv[0]))
