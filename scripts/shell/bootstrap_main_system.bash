@@ -4,7 +4,6 @@ set -o xtrace
 set -o verbose
 set -o errexit
 
-
 if [ false ]; then
 fdisk /dev/sdb << "EOF"
 n

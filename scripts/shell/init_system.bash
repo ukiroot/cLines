@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -o xtrace
+set -o verbose
+set -o errexit
+
 #Initializations of varibles
 DIR_MAIN=$(dirname `readlink -e "$0"`)
 VM_ISO="/var/lib/libvirt/images/VyOS.iso"
@@ -8,19 +12,20 @@ VYOS_URL="https://downloads.vyos.io/release/1.1.8/vyos-1.1.8-amd64.iso"
 NUMBER_OF_EUD="8"
 EUT_BRIDGE="eud_bridge"
 BRIDGE_RESOURCE_MASK="mighty_bridge_"
-LINUXCHCHAN=("ursamajor" \
-"ursaminor" \
-"lupus" \
-"pisces" \
-"vulpecula" \
-"aquarius" \
-"aries" \
-"pisces"
+LINUXCHCHAN=(
+    "ursamajor" \
+    "ursaminor" \
+    "lupus" \
+    "pisces" \
+    "vulpecula" \
+    "aquarius" \
+    "aries" \
+    "pisces"
 )
 
 
 #Initializations of functions
-function install_python_packages_via_apt() (
+function install_python_packages_via_apt {
 apt -y install \
     python3 \
     python3-pexpect \
@@ -28,47 +33,49 @@ apt -y install \
     pycodestyle \
     python3-requests \
     python3-bashate
-)
+}
 
-function install_system_packages_via_apt() (
+
+function install_system_packages_via_apt {
 apt -y install \
     telnet
-)
+}
 
-function delete_bridge() (
-   MASK="$1"
-   ip link show type bridge | grep ": ${MASK}" | awk '{print $2}' | sed 's/://' | while read BRIDGE; do
-      ip link del dev "${BRIDGE}" 
-   done
-)
 
-function init_bridge_interfaces() (
-   delete_bridge "${BRIDGE_RESOURCE_MASK}"
-   delete_bridge "${EUT_BRIDGE}"
-   
-   ip link add name "${EUT_BRIDGE}" type bridge
-   ip link set dev "${EUT_BRIDGE}" up
-)
+function delete_bridge {
+    MASK="$1"
+    ip link show type bridge | grep ": ${MASK}" | awk '{print $2}' | sed 's/://' | while read BRIDGE; do
+        ip link del dev "${BRIDGE}"
+    done
+}
 
-function create_eut_config() (
-   VM_NAME="EUT_${VM_ID}"
-   VM_DISK="/var/lib/libvirt/images/${VM_NAME}.qcow2"
-   MAC_1="52:54:00:9e:5d:${VM_ID}2"
-   MAC_2="52:54:00:c5:8c:${VM_ID}3"
-   MAC_3="52:54:00:24:c0:${VM_ID}4"
-   MAC_4="52:54:00:dd:ba:${VM_ID}5"
-   CONSOLE_PORT="700${VM_ID}"
 
-   rm -fv "${VM_DISK}"
-   qemu-img create -f qcow2 "${VM_DISK}" 1024M
-   
-   virsh list --all | grep " ${VM_NAME} " | while read NAME; do
-   if [ "`echo ${NAME} | grep running | awk '{print $2}'`" = "${VM_NAME}" ]; then
-       virsh destroy "${VM_NAME}"
-   fi
-   virsh undefine "${VM_NAME}"
-   done
-   cat > /etc/libvirt/qemu/${VM_NAME}.xml << EOF
+function init_bridge_interfaces {
+    delete_bridge "${BRIDGE_RESOURCE_MASK}"
+    delete_bridge "${EUT_BRIDGE}"
+    ip link add name "${EUT_BRIDGE}" type bridge
+    ip link set dev "${EUT_BRIDGE}" up
+}
+
+
+function create_eut_config {
+    VM_NAME="EUT_${VM_ID}"
+    VM_DISK="/var/lib/libvirt/images/${VM_NAME}.qcow2"
+    MAC_1="52:54:00:9e:5d:${VM_ID}2"
+    MAC_2="52:54:00:c5:8c:${VM_ID}3"
+    MAC_3="52:54:00:24:c0:${VM_ID}4"
+    MAC_4="52:54:00:dd:ba:${VM_ID}5"
+    CONSOLE_PORT="700${VM_ID}"
+
+    rm -fv "${VM_DISK}"
+    qemu-img create -f qcow2 "${VM_DISK}" 1024M
+    virsh list --all | grep " ${VM_NAME} " | while read NAME; do
+    if [ "`echo ${NAME} | grep running | awk '{print $2}'`" = "${VM_NAME}" ]; then
+        virsh destroy "${VM_NAME}"
+    fi
+    virsh undefine "${VM_NAME}"
+    done
+    cat > /etc/libvirt/qemu/${VM_NAME}.xml << EOF
 <domain type='kvm'>
     <name>${VM_NAME}</name>
     <uuid>14a0a55f-83b9-4917-a2da-7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}</uuid>
@@ -179,29 +186,26 @@ function create_eut_config() (
     </devices>
 </domain>
 EOF
-)
+}
 
 
-function linuxchan_hostname_hack() (
-   DIR_FOR_IMAGE="/var/lib/libvirt/images/min_dist/"
-   IMAGE_NAME="linuxchan.img"
-   IMAGE="${DIR_FOR_IMAGE}${IMAGE_NAME}"
-   DISK_DEV="/dev/loop0"
-   DISK_DEV_SECTION="p1"
-   DISK_DEV_1="${DISK_DEV}${DISK_DEV_SECTION}"
-   DIR_CHROOT="/mnt/debian"
+function linuxchan_hostname_hack {
+    DIR_FOR_IMAGE="/var/lib/libvirt/images/min_dist/"
+    IMAGE_NAME="linuxchan.img"
+    IMAGE="${DIR_FOR_IMAGE}${IMAGE_NAME}"
+    DISK_DEV="/dev/loop0"
+    DISK_DEV_SECTION="p1"
+    DISK_DEV_1="${DISK_DEV}${DISK_DEV_SECTION}"
+    DIR_CHROOT="/mnt/debian"
 
-
-   losetup "${DISK_DEV}" "${IMAGE}"
-   mount -v "${DISK_DEV_1}" "${DIR_CHROOT}"
-   mount -v --bind /dev "${DIR_CHROOT}/dev"
-   mount -vt devpts devpts "${DIR_CHROOT}/dev/pts"
-   mount -vt proc proc "${DIR_CHROOT}/proc"
-   mount -vt sysfs sysfs "${DIR_CHROOT}/sys"
-   mount -vt tmpfs tmpfs "${DIR_CHROOT}/run"
-
-
-   cat > "${DIR_CHROOT}/etc/rc.local" << "EOF" 
+    losetup "${DISK_DEV}" "${IMAGE}"
+    mount -v "${DISK_DEV_1}" "${DIR_CHROOT}"
+    mount -v --bind /dev "${DIR_CHROOT}/dev"
+    mount -vt devpts devpts "${DIR_CHROOT}/dev/pts"
+    mount -vt proc proc "${DIR_CHROOT}/proc"
+    mount -vt sysfs sysfs "${DIR_CHROOT}/sys"
+    mount -vt tmpfs tmpfs "${DIR_CHROOT}/run"
+    cat > "${DIR_CHROOT}/etc/rc.local" << "EOF"
 #!/bin/sh -e
 HOSTNAME=`cat /proc/cmdline | grep -oE 'hostname=[a-z0-9\\-]+' | sed 's/hostname=//'`
 if [ "${HOSTNAME}" != '' ]; then
@@ -209,47 +213,41 @@ if [ "${HOSTNAME}" != '' ]; then
 fi
 exit 0
 EOF
-
-   cat > "${DIR_CHROOT}/root/grub_cutomize.sh" << EOF
+    cat > "${DIR_CHROOT}/root/grub_cutomize.sh" << EOF
 LINUXCHCHAN=${LINUXCHCHAN}
 EOF
-
-   cat > "${DIR_CHROOT}/root/grub_cutomize.sh" << "EOF"
+    cat > "${DIR_CHROOT}/root/grub_cutomize.sh" << "EOF"
 seq 8 | while read VM_ID; do
-   HOSTNAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
-   cat /boot/grub/grub.cfg | grep -A20 "menuentry 'Debian GNU/Linux'" | grep -B 20 '^}' | \
-   sed -e 's/Debian GNU\/Linux/'${HOSTNAME}'/' -e 's/console=ttyS0/console=ttyS0 hostname='${HOSTNAME}'/' >> /etc/grub.d/40_custom
+    HOSTNAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
+    cat /boot/grub/grub.cfg | grep -A20 "menuentry 'Debian GNU/Linux'" | grep -B 20 '^}' | \
+    sed -e 's/Debian GNU\/Linux/'${HOSTNAME}'/' -e 's/console=ttyS0/console=ttyS0 hostname='${HOSTNAME}'/' >> /etc/grub.d/40_custom
 done
 update-grub2
 EOF
+    chroot "${DIR_CHROOT}" /bin/bash /root/grub_cutomize.sh
+    chroot "${DIR_CHROOT}" /bin/bash -c "rm -fv /root/grub_cutomize.sh"
+    umount -v "${DIR_CHROOT}/dev/pts"
+    umount -v "${DIR_CHROOT}/dev"
+    umount -v "${DIR_CHROOT}/proc"
+    umount -v "${DIR_CHROOT}/sys"
+    umount -v "${DIR_CHROOT}/run"
+    umount -v "${DIR_CHROOT}"
+    losetup -d "${DISK_DEV}"
+}
 
 
-   chroot "${DIR_CHROOT}" /bin/bash /root/grub_cutomize.sh
-   chroot "${DIR_CHROOT}" /bin/bash -c "rm -fv /root/grub_cutomize.sh"
+function create_linuxchan_config {
+    MAC_1="52:54:00:9e:77:${VM_ID}7"
+    MAC_2="52:54:00:c5:77:${VM_ID}8"
+    CONSOLE_PORT="770${VM_ID}"
 
-   umount -v "${DIR_CHROOT}/dev/pts"
-   umount -v "${DIR_CHROOT}/dev"
-   umount -v "${DIR_CHROOT}/proc"
-   umount -v "${DIR_CHROOT}/sys"
-   umount -v "${DIR_CHROOT}/run"
-   umount -v "${DIR_CHROOT}"
-   losetup -d "${DISK_DEV}"
-)
-
-
-function create_linuxchan_config() (
-   MAC_1="52:54:00:9e:77:${VM_ID}7"
-   MAC_2="52:54:00:c5:77:${VM_ID}8"
-   CONSOLE_PORT="770${VM_ID}"
-
-   virsh list --all | grep " ${VM_NAME} " | while read NAME; do
-   if [ "`echo ${NAME} | grep running | awk '{print $2}'`" = "${VM_NAME}" ]; then
-       virsh destroy "${VM_NAME}"
-   fi
-   virsh undefine "${VM_NAME}"
-   done
-
-   cat > /etc/libvirt/qemu/${VM_NAME}.xml << EOF
+    virsh list --all | grep " ${VM_NAME} " | while read NAME; do
+    if [ "`echo ${NAME} | grep running | awk '{print $2}'`" = "${VM_NAME}" ]; then
+        virsh destroy "${VM_NAME}"
+    fi
+    virsh undefine "${VM_NAME}"
+    done
+    cat > /etc/libvirt/qemu/${VM_NAME}.xml << EOF
 <domain type='kvm'>
     <name>${VM_NAME}</name>
     <uuid>14a0a55f-83b9-4917-7777-7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}7${VM_ID}</uuid>
@@ -342,9 +340,10 @@ function create_linuxchan_config() (
 EOF
 )
 
-function get_vyos() (
+
+function get_vyos {
     wget -O "${VM_ISO}" "${VYOS_URL}"
-)
+}
 
 
 install_python_packages_via_apt
@@ -353,14 +352,14 @@ install_system_packages_via_apt
 #get_vyos
 
 seq "${NUMBER_OF_EUD}" | while read VM_ID; do
-   create_eut_config
+    create_eut_config
 done
 
 bash "${DIR_MAIN}/bootstrap_linuxchan.bash"
 linuxchan_hostname_hack
 seq "${NUMBER_OF_EUD}" | while read VM_ID; do
-   VM_NAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
-   create_linuxchan_config
+    VM_NAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
+    create_linuxchan_config
 done
 
 init_bridge_interfaces
