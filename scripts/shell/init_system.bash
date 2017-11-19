@@ -26,7 +26,8 @@ apt -y install \
     python3-pexpect \
     python3-flask \
     pycodestyle \
-    python3-requests
+    python3-requests \
+    python3-bashate
 )
 
 function install_system_packages_via_apt() (
