@@ -2,6 +2,7 @@ import json
 import sys
 import os
 import datetime
+import subprocess
 from lib import euts
 
 
@@ -14,6 +15,24 @@ def prepare_parent_system():
     )
 
 
+def start_pool_of_resources(log):
+    return subprocess.Popen(
+        [
+            python_inter,
+            pool_path
+        ],
+        stdout=log,
+        stderr=log
+    )
+
+
+def stop_services(list_of_services):
+    print(list_of_services)
+    for service in list_of_services:
+        service_proc = (service.get(*service))
+        service_proc.kill()
+
+
 def prepare_test_exec(command):
     command = command.replace('[', '"')
     command = command.replace(']', '"')
@@ -21,7 +40,7 @@ def prepare_test_exec(command):
     return command
 
 
-def get_list_if_tests(config):
+def get_list_of_tests(config):
     with open(config, 'r') as f:
         config = json.load(f)[json_root]
     for group in config:
@@ -57,17 +76,31 @@ def get_list_if_tests(config):
                 os.system(test_exec)
 
 
-
 if __name__ == '__main__':
+    #  Block of variables
     timestamp = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M/')
+    list_of_services_proc = []
     path_from_root = os.path.abspath(os.path.dirname(sys.argv[0]))
-
     python_inter = '/usr/bin/python3'
-    json_root = 'tests'
+    path_to_logs_dir = path_from_root + "/logs/"
+    pool_log_file = path_to_logs_dir + "pool.log"
+    pool_path = (
+        path_from_root +
+        euts.slash_char +
+        'services/pool_of_resources.py'
+    )
     config = (
         path_from_root +
         euts.slash_char +
         'configs/config_of_tests.json'
     )
+    json_root = 'tests'
+    #  Block of exeс
+    euts.create_dir(path_to_logs_dir)
+    pool_log = open(pool_log_file, 'w')
+    proc = start_pool_of_resources(pool_log)
+    list_of_services_proc.append({'pool': proc})
     prepare_parent_system()
-    get_list_if_tests(config)
+    get_list_of_tests(config)
+    #  Stop all services
+    stop_services(list_of_services_proc)
