@@ -5,6 +5,8 @@ VM_ISO="/var/lib/libvirt/images/VyOS.iso"
 VYOS_URL="https://downloads.vyos.io/release/1.1.8/vyos-1.1.8-amd64.iso"
 #Max value for NUMBER_OF_EUD is 9
 NUMBER_OF_EUD="8"
+EUT_BRIDGE="eud_bridge"
+BRIDGE_RESOURCE_MASK="mighty_bridge_"
 
 #Initializations of functions
 function install_python_packages_via_apt() (
@@ -21,6 +23,21 @@ apt -y install \
     telnet
 )
 
+function delete_bridge() (
+   MASK="$1"
+   ip link show type bridge | grep ": ${MASK}" | awk '{print $2}' | sed 's/://' | while read BRIDGE; do
+      ip link del dev "${BRIDGE}" 
+   done
+)
+
+function init_bridge_interfaces() (
+   delete_bridge "${BRIDGE_RESOURCE_MASK}"
+   delete_bridge "${EUT_BRIDGE}"
+   
+   ip link add name "${EUT_BRIDGE}" type bridge
+   ip link set dev "${EUT_BRIDGE}" up
+)
+
 function create_eut_config() (
    VM_NAME="EUT_${VM_ID}"
    VM_DISK="/var/lib/libvirt/images/${VM_NAME}.qcow2"
@@ -29,11 +46,7 @@ function create_eut_config() (
    MAC_3="52:54:00:24:c0:${VM_ID}4"
    MAC_4="52:54:00:dd:ba:${VM_ID}5"
    CONSOLE_PORT="700${VM_ID}"
-   EUT_BRIDGE="eud_bridge"
-   
-   ip link add name "${EUT_BRIDGE}" type bridge 2> /dev/null || true
-   ip link set dev "${EUT_BRIDGE}" up
-   
+
    rm -fv "${VM_DISK}"
    qemu-img create -f qcow2 "${VM_DISK}" 1024M
    
@@ -169,5 +182,7 @@ install_system_packages_via_apt
 seq "${NUMBER_OF_EUD}" | while read VM_ID; do
    create_eut_config
 done
+
+init_bridge_interfaces
 
 systemctl restart libvirtd

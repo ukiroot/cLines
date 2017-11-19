@@ -51,6 +51,11 @@ def shutdown_vm(vm):
     os.system('virsh shutdown ' + vm)
 
 
+def init_bridge_interface(bridge):
+    os.system('ip link add name ' + bridge + ' type bridge')
+    os.system('ip link set dev ' + bridge + ' up')
+
+
 def create_dir(path):
     dir_name = os.path.dirname(path)
     if dir_name != empty_char:
@@ -60,11 +65,15 @@ def create_dir(path):
     return False
 
 
+def create_file(log_file):
+    create_dir(log_file)
+    return open(log_file, 'w')
+
+
 def attach_to_cli(command):
     spawn = pexpect.spawnu(command, timeout=270)
     if create_dir(eut_log_file):
-        desc_of_log_file = open(eut_log_file, 'w')
-        spawn.logfile = desc_of_log_file
+        spawn.logfile = create_file(eut_log_file)
     else:
         spawn.logfile = eut_log_file
     return spawn
@@ -149,6 +158,10 @@ def add_resource(uri, body):
 
 def add_eut(body):
     add_resource(pool_url_eut, body)
+
+
+def add_bridge(body):
+    add_resource(pool_url_bridge, body)
 
 
 def get_resource_body(name, settings):
