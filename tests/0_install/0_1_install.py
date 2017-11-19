@@ -3,8 +3,8 @@ import os
 
 
 def test():
-    euts.start_vm(key)
-    eut_1_spawn = euts.attach_to_cli(euts.eut_console[key])
+    euts.start_vm(vm_name)
+    eut_1_spawn = euts.attach_to_cli(vm_console)
     euts.dut_get_operator(
         euts.eut_login,
         euts.eut_password,
@@ -38,7 +38,9 @@ def test():
         euts.eut_operator_promt,
         eut_1_spawn
     )
-    euts.destroy_vm(key)
+
+    euts.add_eut(euts.get_resource_body(vm_name, vm_console))
+    euts.destroy_vm(vm_name)
 
 
 if __name__ == '__main__':
@@ -47,8 +49,9 @@ if __name__ == '__main__':
         '/../../lib'
     )
     import euts
-    test_args_values = sys.argv[3].split(',')
-    test_args_names = sys.argv[2].split(',')
+    test_args_values = sys.argv[3].split(', ')
+    test_args_names = sys.argv[2].split(', ')
     euts.eut_log_file = sys.argv[1]
-    key = test_args_values[0]
+    vm_name = test_args_values[0]
+    vm_console = test_args_values[1]
     test()

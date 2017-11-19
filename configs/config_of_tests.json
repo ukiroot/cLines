@@ -3,56 +3,56 @@
       "0_install": {
           "0_1_install.py": {
             "iteration_1": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_1", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_1", "telnet 127.0.0.1 7001"],
               "test_summary" : "Deploy VyOS to EUT_1",
               "weight": "0"
             },
             "iteration_2": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_2", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_2", "telnet 127.0.0.1 7002"],
               "test_summary" : "Deploy VyOS to EUT_2",
               "weight": "0"
             },
             "iteration_3": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_3", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_3", "telnet 127.0.0.1 7003"],
               "test_summary" : "Deploy VyOS to EUT_3",
               "weight": "0"
             },
             "iteration_4": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_4", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_4", "telnet 127.0.0.1 7004"],
               "test_summary" : "Deploy VyOS to EUT_4",
               "weight": "0"
             },
             "iteration_5": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_5", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_5", "telnet 127.0.0.1 7005"],
               "test_summary" : "Deploy VyOS to EUT_5",
               "weight": "0"
             },
             "iteration_6": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_6", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_6", "telnet 127.0.0.1 7006"],
               "test_summary" : "Deploy VyOS to EUT_6",
               "weight": "0"
             },
             "iteration_7": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_7", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_7", "telnet 127.0.0.1 7007"],
               "test_summary" : "Deploy VyOS to EUT_7",
               "weight": "0"
             },
             "iteration_8": {
-              "args_name" : ["EUT", "IPV7"],
-              "args_value" : ["EUT_8", "True"],
+              "args_name" : ["EUT", "Console"],
+              "args_value" : ["EUT_8", "telnet 127.0.0.1 7008"],
               "test_summary" : "Deploy VyOS to EUT_8",
               "weight": "0"
             }
           }
       },
-      "1_interfacess": {},
+      "1_interfaces": {},
       "2_nat": {},
       "3_firewall": {}
     }
