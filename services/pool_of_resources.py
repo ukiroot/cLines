@@ -43,6 +43,24 @@ pool = {
 key_n = 'name'
 key_s = 'settings'
 key_a = 'available'
+tr_key_s = 'status'
+tr_key_w = 'who'
+transaction = {
+    tr_key_s: 'open',
+    tr_key_w: 'some_bad_guy'
+}
+
+
+@app.route('/restapi/v1.0/transaction', methods=['GET'])
+def get_transaction():
+    return jsonify({'transaction': transaction})
+
+
+@app.route('/restapi/v1.0/transaction', methods=['PUT'])
+def update_transaction():
+    transaction[tr_key_s] = request.json[tr_key_s]
+    transaction[tr_key_w] = request.json[tr_key_w]
+    return jsonify(transaction)
 
 
 @app.route('/restapi/v1.0/pool/<resource>', methods=['GET'])
