@@ -205,6 +205,11 @@ function linuxchan_hostname_hack {
     mount -vt proc proc "${DIR_CHROOT}/proc"
     mount -vt sysfs sysfs "${DIR_CHROOT}/sys"
     mount -vt tmpfs tmpfs "${DIR_CHROOT}/run"
+
+    cat > "${DIR_CHROOT}/etc/grub.d/40_custom" << "EOF"
+#!/bin/sh
+exec tail -n +3 $0
+EOF
     cat > "${DIR_CHROOT}/etc/rc.local" << "EOF"
 #!/bin/sh -e
 HOSTNAME=`cat /proc/cmdline | grep -oE 'hostname=[a-z0-9\\-]+' | sed 's/hostname=//'`
@@ -214,9 +219,9 @@ fi
 exit 0
 EOF
     cat > "${DIR_CHROOT}/root/grub_cutomize.sh" << EOF
-LINUXCHCHAN=${LINUXCHCHAN}
+LINUXCHCHAN=(${LINUXCHCHAN[@]})
 EOF
-    cat > "${DIR_CHROOT}/root/grub_cutomize.sh" << "EOF"
+    cat >> "${DIR_CHROOT}/root/grub_cutomize.sh" << "EOF"
 seq 8 | while read VM_ID; do
     HOSTNAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
     cat /boot/grub/grub.cfg | grep -A20 "menuentry 'Debian GNU/Linux'" | grep -B 20 '^}' | \
@@ -224,8 +229,12 @@ seq 8 | while read VM_ID; do
 done
 update-grub2
 EOF
+    chroot "${DIR_CHROOT}" /bin/bash -c "chmod +x /etc/rc.local"
     chroot "${DIR_CHROOT}" /bin/bash /root/grub_cutomize.sh
     chroot "${DIR_CHROOT}" /bin/bash -c "rm -fv /root/grub_cutomize.sh"
+
+
+
     umount -v "${DIR_CHROOT}/dev/pts"
     umount -v "${DIR_CHROOT}/dev"
     umount -v "${DIR_CHROOT}/proc"
@@ -338,7 +347,7 @@ function create_linuxchan_config {
     </devices>
 </domain>
 EOF
-)
+}
 
 
 function get_vyos {
@@ -364,5 +373,4 @@ done
 
 init_bridge_interfaces
 
-#systemctl restart libvirtd
 systemctl reload libvirtd

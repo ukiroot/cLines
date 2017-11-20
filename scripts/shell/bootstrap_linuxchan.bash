@@ -59,7 +59,6 @@ cat > "${DIR_CHROOT}/root/postinst.sh" << EOF
 #!/bin/bash
 
 apt-get update
-chmod +x /etc/rc.local
 tzselect << "OEF"
 8
 39
@@ -88,6 +87,7 @@ apt-get clean
 sed -i 's/^#GRUB_TERMINAL.*/GRUB_TERMINAL="serial console"/' /etc/default/grub
 sed -i 's/^GRUB_CMDLINE_LINUX.*/GRUB_CMDLINE_LINUX="console=ttyS0"/' /etc/default/grub
 grub-install "${DISK_DEV}" --modules="biosdisk part_msdos"
+update-grub2
 sed -i 's/\/dev\/'"${DISK_DEV_1}"'/\/dev\/sda1/g' /boot/grub/grub.cfg
 sync
 EOF
