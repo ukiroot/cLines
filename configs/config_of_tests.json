@@ -102,7 +102,16 @@
                 }
             }
         },
-        "1_interfaces": {},
+        "1_interfaces": {
+            "ethernet_functional_ipv4.py": {
+                "iteration_1": {
+                    "args_name" : ["Quantity of EUDs", "Quantity of linuxchans", "Quantity of bridges", "Topology config"],
+                    "args_value" : ["1", "1", "1", "'eth0:br0'|'eht0:br0'"],
+                    "test_summary" : "Add bridge  with name 'mighty_bridge_1'",
+                    "weight": "0"
+                }
+            }
+        },
         "2_nat": {},
         "3_firewall": {}
     }
