@@ -1,0 +1,5 @@
+empty_char = ''
+space_char = ' '
+slash_char = '/'
+pipe_char = '|'
+endline_char = '$'
