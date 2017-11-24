@@ -2,18 +2,18 @@ import sys
 import os
 
 
-def test():
-    euts.start_vm(vm_name)
-    eut_1_spawn = euts.attach_to_cli(vm_console)
-    euts.dut_get_operator(
-        euts.eut_login,
-        euts.eut_password,
-        euts.eut_hostname,
+def test(eut_name, eut_console):
+    core.start_vm(eut_name)
+    eut_1_spawn = core.attach_to_cli(eut_console)
+    core.dut_get_operator(
+        core.eut_login,
+        core.eut_password,
+        core.eut_hostname,
         eut_1_spawn
     )
     install_promts = (
         '\]:|\]Mb:|\]MB:|' +
-        euts.eut_login +
+        core.eut_login +
         "':"
     )
     list_of_input_commands = [
@@ -24,23 +24,23 @@ def test():
         'Yes',
         '',
         '',
-        euts.eut_password,
-        euts.eut_password
+        core.eut_password,
+        core.eut_password
     ]
     for command in list_of_input_commands:
-        euts.dut_operator_send_raw_command(
+        core.dut_operator_send_raw_command(
             command,
             install_promts,
             eut_1_spawn
         )
-    euts.dut_operator_send_raw_command(
+    core.dut_operator_send_raw_command(
         'sda',
-        euts.eut_operator_promt,
+        core.eut_operator_promt,
         eut_1_spawn
     )
 
-    euts.add_eut(euts.get_resource_body(vm_name, vm_console))
-    euts.destroy_vm(vm_name)
+    add_eut(get_resource_body(eut_name, eut_console))
+    core.destroy_vm(eut_name)
 
 
 if __name__ == '__main__':
@@ -48,10 +48,13 @@ if __name__ == '__main__':
         os.path.abspath(os.path.dirname(sys.argv[0])) +
         '/../../lib'
     )
-    import euts
-    test_args_values = sys.argv[3].split(', ')
-    test_args_names = sys.argv[2].split(', ')
-    euts.eut_log_file = sys.argv[1]
-    vm_name = test_args_values[0]
-    vm_console = test_args_values[1]
-    test()
+    from clines import *
+    import clines.ccore as core
+
+    args = parse_test_args(sys.argv[1:])
+    core.eut_log_file = args.log
+    eut_name = args.eut_name
+    eut_console = args.eut_console
+    test_summary = args.test_summary
+    weight = args.weight
+    test(eut_name, eut_console)
