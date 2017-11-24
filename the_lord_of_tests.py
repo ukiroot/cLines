@@ -4,14 +4,14 @@ import os
 import datetime
 import time
 import subprocess
-from lib import euts
+import lib.clines as clines
 
 
 def prepare_parent_system():
     os.system(
         'bash ' +
         path_from_root +
-        euts.slash_char +
+        clines.slash_char +
         'scripts/shell/init_system.bash'
     )
 
@@ -33,44 +33,40 @@ def stop_services(list_of_services):
         service_proc.kill()
 
 
-def prepare_test_exec(command):
-    command = command.replace('[', '')
-    command = command.replace(']', '')
-    command = command.replace("'", "")
-    return command
-
-
 def get_list_of_tests(config):
     with open(config, 'r') as f:
         config = json.load(f)[json_root]
     for group in config:
         for test in config[group]:
-            for iteration in config[group][test]:
-                peace_of_test_path = (
-                    group +
-                    euts.slash_char +
-                    test
-                )
-                test_path = (
-                    'tests/' +
-                    peace_of_test_path
-                )
+            peace_of_test_path = (
+                group +
+                clines.slash_char +
+                test
+            )
+            test_path = (
+                'tests/' +
+                peace_of_test_path
+            )
+            for iteration_key in config[group][test]:
+                iteration = config[group][test][iteration_key]
+                print(type(iteration))
+                print(iteration)
+                args = []
+                for arg_key, value in iteration.items():
+                    args.append('--' + arg_key + '=' + value)
                 iteration_log_path = (
-                    'logs/' +
+                    '--log=logs/' +
                     timestamp +
                     peace_of_test_path +
-                    euts.slash_char +
-                    iteration +
+                    clines.slash_char +
+                    iteration_key +
                     '.log'
                 )
-                args_name = str(config[group][test][iteration]['args_name'])
-                args_value = str(config[group][test][iteration]['args_value'])
                 test_exec = [
                     python_inter,
                     test_path,
                     iteration_log_path,
-                    prepare_test_exec(args_name),
-                    prepare_test_exec(args_value)
+                    *args
                 ]
                 list_of_active_tests.append(subprocess.Popen(test_exec))
     while True:
@@ -102,17 +98,17 @@ if __name__ == '__main__':
     pool_log_file = path_to_logs_dir + "pool.log"
     pool_path = (
         path_from_root +
-        euts.slash_char +
+        clines.slash_char +
         'services/pool_of_resources.py'
     )
     config = (
         path_from_root +
-        euts.slash_char +
+        clines.slash_char +
         'configs/config_of_tests.json'
     )
     json_root = 'tests'
     #  Block of exeс
-    euts.create_dir(path_to_logs_dir)
+    clines.create_dir(path_to_logs_dir)
     pool_log = open(pool_log_file, 'w')
     proc = start_pool_of_resources(pool_log)
     list_of_services_proc.append({'pool': proc})
