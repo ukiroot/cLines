@@ -53,7 +53,7 @@ def create_dir(path):
     dir_name = os.path.dirname(path)
     if dir_name != empty_char:
         if not os.path.exists(dir_name):
-            os.makedirs(dir_name)
+            os.makedirs(dir_name, exist_ok=True)
         return True
     return False
 
