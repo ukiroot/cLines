@@ -33,20 +33,20 @@ eut_log_file = 'sys.stdout'
 
 
 def start_vm(vm):
-    os.system('virsh start ' + vm)
+    os.system('sudo virsh start ' + vm)
 
 
 def destroy_vm(vm):
-    os.system('virsh destroy ' + vm)
+    os.system('sudo virsh destroy ' + vm)
 
 
 def shutdown_vm(vm):
-    os.system('virsh shutdown ' + vm)
+    os.system('sudo virsh shutdown ' + vm)
 
 
 def init_bridge_interface(bridge):
-    os.system('ip link add name ' + bridge + ' type bridge')
-    os.system('ip link set dev ' + bridge + ' up')
+    os.system('sudo ip link add name ' + bridge + ' type bridge')
+    os.system('sudo ip link set dev ' + bridge + ' up')
 
 
 def create_dir(path):
@@ -78,6 +78,7 @@ def print_all(spawn):
     print('#####after:')
     print(spawn.after)
     print('#####:')
+
 
 def dut_get_operator(login, password, hostname, spawn):
     spawn.sendline(empty_char)
