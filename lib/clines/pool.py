@@ -2,10 +2,13 @@ import requests
 import json
 from .chars import *
 
-pool_url = 'http://127.0.0.1:5000/restapi/v1.0/pool/'
+rest_service_url = 'http://127.0.0.1:5000/restapi/v1.0/'
+pool_url = rest_service_url + 'pool/'
 pool_url_eut = pool_url + 'eut'
 pool_url_bridge = pool_url + 'bridge'
 pool_url_linuxchan = pool_url + 'linuxchan'
+transaction_url = rest_service_url + 'transaction'
+transaction_status_key = 'status'
 
 
 def resapi_request(method, uri, body='', headers='', debug=False):
@@ -64,24 +67,58 @@ def lock_resource(url, resource_type):
     for resource in json.loads(response.text)[resource_type]:
         if resource['available'] is True:
             resource['available'] = False
-            url_intance = pool_url_eut + slash_char + str(resource['id'])
-            update_resource(url_intance, resource)
+            url_instance = pool_url_eut + slash_char + str(resource['id'])
+            update_resource(url_instance, resource)
             return resource
 
 
-def return_eut(body):
-    return_resource(pool_url_eut, url)
+def release_all_resource():
+    for url, resource_type in zip(
+            [pool_url_eut, pool_url_bridge, pool_url_linuxchan],
+            ['eut', 'bridge', 'linuxchan']
+    ):
+        response = get_resource(url)
+        for resource in json.loads(response.text)[resource_type]:
+            if resource['available'] is False:
+                resource['available'] = True
+                url_instance = pool_url_eut + slash_char + str(resource['id'])
+                update_resource(url_instance, resource)
 
 
-def return_bridge(body):
-    return_resource(pool_url_bridge, url)
+def count_available(url, resource_type):
+    count = 0
+    response = get_resource(url)
+    for resource in json.loads(response.text)[resource_type]:
+        if resource['available'] is True:
+            count = count + 1
+    return count
 
 
-def return_linuxchan(body):
-    return_resource(pool_url_linuxchan, url)
+def get_available_eut():
+    return count_available(pool_url_eut, 'eut')
 
 
-def return_resource(body, url):
+def get_available_bridge():
+    return count_available(pool_url_bridge, 'bridge')
+
+
+def get_available_linuxchan():
+    return count_available(pool_url_linuxchan, 'linuxchan')
+
+
+def release_eut(body):
+    release_resource(body, pool_url_eut)
+
+
+def release_bridge(body):
+    release_resource(body, pool_url_bridge)
+
+
+def release_linuxchan(body):
+    release_resource(body, pool_url_linuxchan)
+
+
+def release_resource(body, url):
     body['available'] = True
     update_resource(url + slash_char + str(body['id']), body)
 
@@ -96,3 +133,27 @@ def get_resource_body(name, settings):
                 'settings': [settings]
             }
     return body
+
+
+def check_transaction():
+    response = get_resource(transaction_url)
+    status = json.loads(response.text)[transaction_status_key]
+    if status == 'available':
+        return True
+    return False
+
+
+def update_transaction(status, who=''):
+    body = {'status': status}
+    if who != '':
+        body.update({'who': who})
+    print(body)
+    update_resource(transaction_url, body)
+
+
+def set_transaction(who=''):
+    update_transaction('processing', who)
+
+
+def commit_transaction(who=''):
+    update_transaction('available', who)
