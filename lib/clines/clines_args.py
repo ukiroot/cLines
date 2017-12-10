@@ -37,7 +37,7 @@ def parse_test_args(args):
         type=int
     )
     parser.add_argument(
-        '--euds', '--EUDs',
+        '--euts', '--EUTs',
         action="store",
         type=int
     )

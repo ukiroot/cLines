@@ -1,4 +1,29 @@
 from .chars import *
 from .clines_args import *
-from .pool import add_eut, add_bridge, get_resource_body
-from .ccore import create_dir
+from .vm_virsh import *
+from .pool import \
+    add_eut, \
+    add_bridge, \
+    get_resource_body, \
+    check_transaction, \
+    set_transaction, \
+    commit_transaction, \
+    get_available_eut, \
+    get_available_bridge, \
+    get_available_linuxchan, \
+    release_eut, \
+    release_bridge, \
+    release_linuxchan, \
+    release_all_resource, \
+    get_bridges, \
+    get_euts, \
+    get_linuxchans
+from .ccore import create_dir, \
+    attach_to_cli, \
+    eut_login, \
+    eut_password, \
+    eut_hostname, \
+    eut_password, \
+    dut_operator_send_raw_command, \
+    eut_operator_promt, \
+    eut_log_file

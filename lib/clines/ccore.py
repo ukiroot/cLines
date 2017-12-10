@@ -1,9 +1,6 @@
 import pexpect
-import sys
 import re
 import os
-import requests
-import json
 from .chars import *
 
 
@@ -30,23 +27,6 @@ eut_for_login_promt = (
 )
 eut_exit_cmd = 'exit'
 eut_log_file = 'sys.stdout'
-
-
-def start_vm(vm):
-    os.system('sudo virsh start ' + vm)
-
-
-def destroy_vm(vm):
-    os.system('sudo virsh destroy ' + vm)
-
-
-def shutdown_vm(vm):
-    os.system('sudo virsh shutdown ' + vm)
-
-
-def init_bridge_interface(bridge):
-    os.system('sudo ip link add name ' + bridge + ' type bridge')
-    os.system('sudo ip link set dev ' + bridge + ' up')
 
 
 def create_dir(path):
