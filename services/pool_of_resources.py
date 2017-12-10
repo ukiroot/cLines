@@ -9,7 +9,7 @@ app = Flask(__name__)
 #      [
 #          {
 #              'id': 1,
-#              'name': 'EUD_1',
+#              'name': 'EUT_1',
 #              'settings': ['telnet 127.0.0.1 7001'],
 #              'available': True
 #          }

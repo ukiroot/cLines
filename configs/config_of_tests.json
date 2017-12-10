@@ -13,42 +13,6 @@
                     "eut_console" : "telnet 127.0.0.1 7002",
                     "test_summary" : "Deploy VyOS to EUT_2",
                     "weight": "0"
-                },
-                "iteration_3": {
-                    "eut_name" : "EUT_3",
-                    "eut_console" : "telnet 127.0.0.1 7003",
-                    "test_summary" : "Deploy VyOS to EUT_3",
-                    "weight": "0"
-                },
-                "iteration_4": {
-                    "eut_name" : "EUT_4",
-                    "eut_console" : "telnet 127.0.0.1 7004",
-                    "test_summary" : "Deploy VyOS to EUT_4",
-                    "weight": "0"
-                },
-                "iteration_5": {
-                    "eut_name" : "EUT_5",
-                    "eut_console" : "telnet 127.0.0.1 7005",
-                    "test_summary" : "Deploy VyOS to EUT_5",
-                    "weight": "0"
-                },
-                "iteration_6": {
-                    "eut_name" : "EUT_6",
-                    "eut_console" : "telnet 127.0.0.1 7006",
-                    "test_summary" : "Deploy VyOS to EUT_6",
-                    "weight": "0"
-                },
-                "iteration_7": {
-                    "eut_name" : "EUT_7",
-                    "eut_console" : "telnet 127.0.0.1 7007",
-                    "test_summary" : "Deploy VyOS to EUT_7",
-                    "weight": "0"
-                },
-                "iteration_8": {
-                    "eut_name" : "EUT_8",
-                    "eut_console" : "telnet 127.0.0.1 7008",
-                    "test_summary" : "Deploy VyOS to EUT_8",
-                    "weight": "0"
                 }
             },
             "0_2_init_bridge_resources.py": {
@@ -71,33 +35,13 @@
                     "bridge_name" : "mighty_bridge_4",
                     "test_summary" : "Add bridge  with name 'mighty_bridge_4'",
                     "weight": "0"
-                },
-                "iteration_5": {
-                    "bridge_name" : "mighty_bridge_5",
-                    "test_summary" : "Add bridge  with name 'mighty_bridge_5'",
-                    "weight": "0"
-                },
-                "iteration_6": {
-                    "bridge_name" : "mighty_bridge_6",
-                    "test_summary" : "Add bridge  with name 'mighty_bridge_6'",
-                    "weight": "0"
-                },
-                "iteration_7": {
-                    "bridge_name" : "mighty_bridge_7",
-                    "test_summary" : "Add bridge  with name 'mighty_bridge_7'",
-                    "weight": "0"
-                },
-                "iteration_8": {
-                    "bridge_name" : "mighty_bridge_8",
-                    "test_summary" : "Add bridge  with name 'mighty_bridge_8'",
-                    "weight": "0"
                 }
             }
         },
         "1_interfaces": {
             "1_1_ethernet_functional_ipv4.py": {
                 "iteration_1": {
-                    "EUDs" : "1",
+                    "EUTs" : "1",
                     "linuxchans" : "1",
                     "bridges" : "1",
                     "topology" : "'eth0:br0'|'eht0:br0'",

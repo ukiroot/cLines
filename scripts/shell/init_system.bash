@@ -8,9 +8,9 @@ set -o errexit
 DIR_MAIN=$(dirname `readlink -e "$0"`)
 VM_ISO="/var/lib/libvirt/images/VyOS.iso"
 VYOS_URL="https://downloads.vyos.io/release/1.1.8/vyos-1.1.8-amd64.iso"
-#Max value for NUMBER_OF_EUD is 9
-NUMBER_OF_EUD="8"
-EUT_BRIDGE="eud_bridge"
+#Max value for NUMBER_OF_EUT is 9
+NUMBER_OF_EUT="8"
+EUT_BRIDGE="eut_bridge"
 BRIDGE_RESOURCE_MASK="mighty_bridge_"
 LINUXCHCHAN=(
     "ursamajor" \
@@ -360,13 +360,13 @@ install_system_packages_via_apt
 
 #get_vyos
 
-seq "${NUMBER_OF_EUD}" | while read VM_ID; do
+seq "${NUMBER_OF_EUT}" | while read VM_ID; do
     create_eut_config
 done
 
 bash "${DIR_MAIN}/bootstrap_linuxchan.bash"
 linuxchan_hostname_hack
-seq "${NUMBER_OF_EUD}" | while read VM_ID; do
+seq "${NUMBER_OF_EUT}" | while read VM_ID; do
     VM_NAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
     create_linuxchan_config
 done
