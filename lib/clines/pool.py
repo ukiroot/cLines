@@ -157,3 +157,24 @@ def set_transaction(who=''):
 
 def commit_transaction(who=''):
     update_transaction('available', who)
+
+
+def get_bridges(qantity):
+    list = []
+    for i in range(qantity):
+        list.append(get_bridge())
+    return list
+
+
+def get_euts(qantity):
+    list = []
+    for i in range(qantity):
+        list.append(get_eut())
+    return list
+
+
+def get_linuxchans(qantity):
+    list = []
+    for i in range(qantity):
+        list.append(get_linuxchan())
+    return list
