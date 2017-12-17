@@ -50,6 +50,14 @@ def add_eut(body):
     add_resource(pool_url_eut, body)
 
 
+def add_bridge(body):
+    add_resource(pool_url_bridge, body)
+
+
+def add_linuxchan(body):
+    add_resource(pool_url_linuxchan, body)
+
+
 def get_eut():
     return lock_resource(pool_url_eut, 'eut')
 
@@ -121,10 +129,6 @@ def release_linuxchan(body):
 def release_resource(body, url):
     body['available'] = True
     update_resource(url + slash_char + str(body['id']), body)
-
-
-def add_bridge(body):
-    add_resource(pool_url_bridge, body)
 
 
 def get_resource_body(name, settings):

@@ -4,6 +4,7 @@ from .vm_virsh import *
 from .pool import \
     add_eut, \
     add_bridge, \
+    add_linuxchan, \
     get_resource_body, \
     check_transaction, \
     set_transaction, \
@@ -24,6 +25,8 @@ from .ccore import create_dir, \
     eut_password, \
     eut_hostname, \
     eut_password, \
-    dut_operator_send_raw_command, \
+    eut_get_operator, \
+    eut_operator_send_raw_command, \
     eut_operator_promt, \
-    eut_log_file
+    linuxchan_grub, \
+    linuxchan_get_shell

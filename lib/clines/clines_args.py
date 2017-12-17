@@ -27,6 +27,11 @@ def parse_test_args(args):
         type=str
     )
     parser.add_argument(
+        '--linuxchan_name',
+        action="store",
+        type=str
+    )
+    parser.add_argument(
         '--test_summary',
         action="store",
         type=str

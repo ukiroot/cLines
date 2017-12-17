@@ -1,8 +1,8 @@
 import pexpect
 import re
 import os
+import sys
 from .chars import *
-
 
 eut_login = 'vyos'
 eut_password = 'vyos'
@@ -26,7 +26,6 @@ eut_for_login_promt = (
     + eut_admin_promt
 )
 eut_exit_cmd = 'exit'
-eut_log_file = 'sys.stdout'
 
 
 def create_dir(path):
@@ -43,13 +42,43 @@ def create_file(log_file):
     return open(log_file, 'w')
 
 
-def attach_to_cli(command):
+def attach_to_cli(command, log_file=sys.stdout):
     spawn = pexpect.spawnu(command, timeout=270)
-    if create_dir(eut_log_file):
-        spawn.logfile = create_file(eut_log_file)
-    else:
-        spawn.logfile = eut_log_file
+    if create_dir(log_file):
+        spawn.logfile = create_file(log_file)
     return spawn
+
+
+def linuxchan_grub(name, spawn):
+    key = '\x76'  # '\x76' is 'v'
+    spawn.send('')
+    spawn.expect('\*[A-Za-z]+')
+    for i in range(100):
+        spawn.send(key)
+        spawn.expect('\*[A-Za-z]+')
+        if name in spawn.after:
+            break
+        if i == 99:
+            raise Exception("Pattern didn't find in Grub menu")
+    spawn.sendline('')
+    spawn.expect('[a-z]+' + ' login:')
+    if name + ' login:' not in spawn.after:
+        raise Exception(
+            """After boot expetc promt:
+             {0}
+             but promt was:
+             {1}
+             """.format(name + ' login:', spawn.after)
+        )
+
+
+def linuxchan_get_shell(name, spawn):
+    spawn.sendline('')
+    spawn.expect(name + " login:")
+    spawn.sendline('root')
+    spawn.expect("Password:")
+    spawn.sendline('admin')
+    spawn.expect("root@" + name + r':~#')
 
 
 def print_all(spawn):
@@ -60,7 +89,7 @@ def print_all(spawn):
     print('#####:')
 
 
-def dut_get_operator(login, password, hostname, spawn):
+def eut_get_operator(login, password, hostname, spawn):
     spawn.sendline(empty_char)
     spawn.expect(eut_for_login_promt)
     if re.search(eut_operator_promt, spawn.after):
@@ -75,28 +104,28 @@ def dut_get_operator(login, password, hostname, spawn):
         spawn.expect(eut_operator_promt)
 
 
-def dut_get_admin(login, password, hostname, spawn):
+def eut_get_admin(login, password, hostname, spawn):
     spawn.sendline(empty_char)
     spawn.expect(eut_for_login_promt)
     if re.search(eut_admin_promt, spawn.after):
         True
     elif re.search(eut_login_promt, spawn.after):
-        dut_get_operator(login, password, hostname, spawn)
-        dut_from_operator_to_admin(spawn)
+        eut_get_operator(login, password, hostname, spawn)
+        eut_from_operator_to_admin(spawn)
     elif re.search(eut_operator_promt, spawn.after):
-        dut_from_operator_to_admin(spawn)
+        eut_from_operator_to_admin(spawn)
 
 
-def dut_from_operator_to_admin(spawn):
+def eut_from_operator_to_admin(spawn):
         spawn.sendline('configure')
         spawn.expect(eut_admin_promt)
 
 
-def dut_operator_sudo(cmd, spawn):
+def eut_operator_sudo(cmd, spawn):
     spawn.sendline('sudo ' + cmd)
     spawn.expect(eut_operator_promt)
 
 
-def dut_operator_send_raw_command(cmd, promt, spawn):
+def eut_operator_send_raw_command(cmd, promt, spawn):
     spawn.sendline(cmd)
     spawn.expect(promt)

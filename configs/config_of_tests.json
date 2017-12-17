@@ -36,6 +36,20 @@
                     "test_summary" : "Add bridge  with name 'mighty_bridge_4'",
                     "weight": "0"
                 }
+            },
+            "0_3_linuxchan.py": {
+                "iteration_1": {
+                    "linuxchan_name" : "lupus",
+                    "test_summary" : "Add VM with name 'lupus'",
+                    "eut_console" : "telnet 127.0.0.1 7703",
+                    "weight": "0"
+                },
+                "iteration_2": {
+                    "linuxchan_name" : "vulpecula",
+                    "test_summary" : "Add VM with name 'vulpecula'",
+                    "eut_console" : "telnet 127.0.0.1 7705",
+                    "weight": "0"
+                }
             }
         },
         "1_interfaces": {
