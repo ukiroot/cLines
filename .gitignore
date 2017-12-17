@@ -1,3 +1,5 @@
 __pycache__
 *.pyc
 logs
+.idea
+scripts/shell/make_life_some_easy.bash
