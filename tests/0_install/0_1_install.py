@@ -2,10 +2,10 @@ import sys
 import lib.clines as clines
 
 
-def test(eut_name, eut_console):
+def test(eut_name, eut_console, log_file):
     clines.start_vm(eut_name)
-    eut_1_spawn = clines.attach_to_cli(eut_console)
-    clines.dut_get_operator(
+    eut_1_spawn = clines.attach_to_cli(eut_console, log_file)
+    clines.eut_get_operator(
         clines.eut_login,
         clines.eut_password,
         clines.eut_hostname,
@@ -28,12 +28,12 @@ def test(eut_name, eut_console):
         clines.eut_password
     ]
     for command in list_of_input_commands:
-        clines.dut_operator_send_raw_command(
+        clines.eut_operator_send_raw_command(
             command,
             install_promts,
             eut_1_spawn
         )
-    clines.dut_operator_send_raw_command(
+    clines.eut_operator_send_raw_command(
         'sda',
         clines.eut_operator_promt,
         eut_1_spawn
@@ -46,9 +46,9 @@ def test(eut_name, eut_console):
 if __name__ == '__main__':
 
     args = clines.parse_test_args(sys.argv[1:])
-    clines.eut_log_file = args.log
+    log_file = args.log
     eut_name = args.eut_name
     eut_console = args.eut_console
     test_summary = args.test_summary
     weight = args.weight
-    test(eut_name, eut_console)
+    test(eut_name, eut_console, log_file)
