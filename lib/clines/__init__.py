@@ -1,6 +1,14 @@
 from .chars import *
 from .clines_args import *
-from .vm_virsh import *
+from .vm_virsh import \
+    start_vm, \
+    destroy_vm, \
+    shutdown_vm, \
+    init_bridge_interface, \
+    get_vm_interface
+from .topology import \
+    update_br, \
+    init_topology
 from .pool import \
     add_eut, \
     add_bridge, \

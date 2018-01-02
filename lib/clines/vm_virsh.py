@@ -20,6 +20,10 @@ def init_bridge_interface(bridge):
     os.system('sudo ip link set dev ' + bridge + ' up')
 
 
+def add_interface_to_bridge(interface, bridge):
+    os.system('sudo ip link set ' + interface + ' master ' + bridge)
+
+
 def get_vm_interface(vm):
     return re.findall(
         ('vnet[0-9]+'),
