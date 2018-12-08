@@ -21,6 +21,7 @@ def init_bridge_interface(bridge):
 
 
 def add_interface_to_bridge(interface, bridge):
+    os.system('sudo ip del ' + bridge)
     os.system('sudo ip link set ' + interface + ' master ' + bridge)
 
 
