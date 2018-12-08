@@ -3,7 +3,6 @@ import lib.clines as clines
 
 
 def test(bridge_name):
-    clines.init_bridge_interface(bridge_name)
     clines.add_bridge(clines.get_resource_body(bridge_name, ''))
 
 
