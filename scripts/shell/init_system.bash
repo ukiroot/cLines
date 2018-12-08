@@ -7,7 +7,7 @@ set -o errexit
 #Initializations of varibles
 DIR_MAIN=$(dirname `readlink -e "$0"`)
 VM_ISO="/var/lib/libvirt/images/VyOS.iso"
-VYOS_URL="https://downloads.vyos.io/release/1.1.8/vyos-1.1.8-amd64.iso"
+VYOS_URL="https://downloads.vyos.io/rolling/current/amd64/vyos-1.2.0-rolling%2B201812080337-amd64.iso"
 #Max value for NUMBER_OF_EUT is 9
 NUMBER_OF_EUT="8"
 EUT_BRIDGE="eut_bridge"
@@ -68,7 +68,7 @@ function create_eut_config {
     CONSOLE_PORT="700${VM_ID}"
 
     rm -fv "${VM_DISK}"
-    qemu-img create -f qcow2 "${VM_DISK}" 1024M
+    qemu-img create -f qcow2 "${VM_DISK}" 2048M # Unfortunately since VyOS 1.2.X  requires a total of at least 2000MB to properly install.
     virsh list --all | grep " ${VM_NAME} " | while read NAME; do
     if [ "`echo ${NAME} | grep running | awk '{print $2}'`" = "${VM_NAME}" ]; then
         virsh destroy "${VM_NAME}"
@@ -291,8 +291,9 @@ function create_linuxchan_config {
         <disk type='file' device='disk'>
           <driver name='qemu' type='raw'/>
           <source file='/var/lib/libvirt/images/min_dist/linuxchan.img'/>
-          <target dev='hda' bus='ide'/>
+          <target dev='sda' bus='sata'/>
           <boot order='1'/>
+          <shareable/>
           <address type='drive' controller='0' bus='0' target='0' unit='0'/>
         </disk>
         <controller type='usb' index='0' model='ich9-ehci1'>
@@ -358,7 +359,7 @@ function get_vyos {
 install_python_packages_via_apt
 install_system_packages_via_apt
 
-#get_vyos
+get_vyos
 
 seq "${NUMBER_OF_EUT}" | while read VM_ID; do
     create_eut_config
