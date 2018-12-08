@@ -2,6 +2,7 @@ import pexpect
 import re
 import os
 import sys
+import time
 from .chars import *
 
 eut_login = 'vyos'
@@ -51,11 +52,12 @@ def attach_to_cli(command, log_file=sys.stdout):
 
 def linuxchan_grub(name, spawn):
     key = '\x76'  # '\x76' is 'v'
-    spawn.send('')
-    spawn.expect('\*[A-Za-z]+')
-    for i in range(100):
+    spawn.send('\x5e')  #http://defindit.com/ascii.html
+    spawn.expect('\*[A-Za-z]+ ')
+    for i in range(20):
         spawn.send(key)
-        spawn.expect('\*[A-Za-z]+')
+        time.sleep(1)
+        spawn.expect('\*[A-Za-z]+ ')
         if name in spawn.after:
             break
         if i == 99:
