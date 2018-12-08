@@ -37,22 +37,22 @@ sleep 5
 mkfs.ext4 "${DISK_DEV_1}"
 mkdir -p "${DIR_CHROOT}"
 mount -v "${DISK_DEV_1}" "${DIR_CHROOT}"
-debootstrap --verbose --include=sudo,locales,nano,wget,grub-pc --arch amd64 "${DEBIAN_VER}" "${DIR_CHROOT}" http://ftp.ru.debian.org/debian/
+debootstrap --verbose --include=sudo,locales,nano,wget,grub-pc --arch amd64 "${DEBIAN_VER}" "${DIR_CHROOT}" http://www.nic.funet.fi/debian/
 cat > "${DIR_CHROOT}/etc/fstab" << "EOF"
 /dev/sda1       /               ext4        defaults        0       1
 EOF
 cat > "${DIR_CHROOT}/etc/apt/sources.list" << EOF
-deb http://ftp.ru.debian.org/debian ${DEBIAN_VER} main contrib non-free
-deb-src http://ftp.ru.debian.org/debian ${DEBIAN_VER} main contrib non-free
+deb http://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free
+deb-src http://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free
 
-deb http://ftp.debian.org/debian/ ${DEBIAN_VER}-updates main contrib non-free
-deb-src http://ftp.debian.org/debian/ ${DEBIAN_VER}-updates main contrib non-free
+deb http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-updates main contrib non-free
+deb-src http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-updates main contrib non-free
 
-deb http://ftp.debian.org/debian/ ${DEBIAN_VER}-backports main contrib non-free
-deb-src http://ftp.debian.org/debian/ ${DEBIAN_VER}-backports main contrib non-free
+deb http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-backports main contrib non-free
+deb-src http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-backports main contrib non-free
 
-deb http://ftp.ru.debian.org/debian-security ${DEBIAN_VER}/updates main contrib non-free
-deb-src http://ftp.ru.debian.org/debian-security ${DEBIAN_VER}/updates main contrib non-free
+deb http://www.nic.funet.fi/debian-security ${DEBIAN_VER}/updates main contrib non-free
+deb-src http://www.nic.funet.fi/debian-security ${DEBIAN_VER}/updates main contrib non-free
 EOF
 
 cat > "${DIR_CHROOT}/root/postinst.sh" << EOF

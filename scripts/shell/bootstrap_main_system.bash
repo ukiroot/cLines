@@ -19,7 +19,7 @@ mkfs.ext4 /dev/sdb1
 mkdir /mnt/debian
 mount -v /dev/sdb1 /mnt/debian
 
-debootstrap --verbose --include=sudo,locales,nano,wget,grub-pc --arch amd64 stretch /mnt/debian http://ftp.ru.debian.org/debian/
+debootstrap --verbose --include=sudo,locales,nano,wget,grub-pc --arch amd64 stretch /mnt/debian http://www.nic.funet.fi/debian/
 
 
 cat > /mnt/debian/etc/fstab << "EOF"
@@ -27,17 +27,17 @@ cat > /mnt/debian/etc/fstab << "EOF"
 EOF
 
 cat > /mnt/debian/etc/apt/sources.list << "EOF"
-deb http://ftp.ru.debian.org/debian stretch main contrib non-free
-deb-src http://ftp.ru.debian.org/debian stretch main contrib non-free
+deb http://www.nic.funet.fi/debian stretch main contrib non-free
+deb-src http://www.nic.funet.fi/debian stretch main contrib non-free
 
-deb http://ftp.debian.org/debian/ stretch-updates main contrib non-free
-deb-src http://ftp.debian.org/debian/ stretch-updates main contrib non-free
+deb http://www.nic.funet.fi/debian/ stretch-updates main contrib non-free
+deb-src http://www.nic.funet.fi/debian/ stretch-updates main contrib non-free
 
-deb http://ftp.debian.org/debian/ stretch-backports main contrib non-free
-deb-src http://ftp.debian.org/debian/ stretch-backports main contrib non-free
+deb http://www.nic.funet.fi/debian/ stretch-backports main contrib non-free
+deb-src http://www.nic.funet.fi/debian/ stretch-backports main contrib non-free
 
-deb http://ftp.ru.debian.org/debian-security stretch/updates main contrib non-free
-deb-src http://ftp.ru.debian.org/debian-security stretch/updates main contrib non-free
+deb http://www.nic.funet.fi/debian-security stretch/updates main contrib non-free
+deb-src http://www.nic.funet.fi/debian-security stretch/updates main contrib non-free
 EOF
 
 
