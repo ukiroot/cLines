@@ -8,7 +8,8 @@ from .vm_virsh import \
     get_vm_interface
 from .topology import \
     update_br, \
-    init_topology
+    init_topology, \
+    destroy_topology
 from .pool import \
     add_eut, \
     add_bridge, \

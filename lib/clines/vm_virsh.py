@@ -16,12 +16,12 @@ def shutdown_vm(vm):
 
 
 def init_bridge_interface(bridge):
+    os.system('sudo ip link del ' + bridge)
     os.system('sudo ip link add name ' + bridge + ' type bridge')
     os.system('sudo ip link set dev ' + bridge + ' up')
 
 
 def add_interface_to_bridge(interface, bridge):
-    os.system('sudo ip del ' + bridge)
     os.system('sudo ip link set ' + interface + ' master ' + bridge)
 
 

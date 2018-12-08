@@ -1,7 +1,10 @@
 import re
 from .vm_virsh import \
     get_vm_interface, \
-    add_interface_to_bridge
+    add_interface_to_bridge, \
+    destroy_vm, \
+    start_vm, \
+    init_bridge_interface
 
 
 def update_br(brs_resource, topology):
@@ -23,6 +26,7 @@ def update_eth(vm_interfaces, node_topology):
 
 def init_topology(euts, linuxchans, brs_resource, topology):
     node_names = []
+    bridge_list = []
     topology = update_br(brs_resource, topology)
     topology_of_node = topology.split("|")
     count = 0
@@ -32,10 +36,21 @@ def init_topology(euts, linuxchans, brs_resource, topology):
         node_names.append(linuxchan['name'])
 
     for node in topology_of_node:
+        start_vm(node_names[count])
         vm_interfaces = get_vm_interface(node_names[count])
         topology_of_interface = update_eth(vm_interfaces, node).split(",")
         for interface in topology_of_interface:
             interface_name = interface.split(":")[0]
             bridge_name = interface.split(":")[1]
+            if bridge_name not in bridge_list:
+                init_bridge_interface(bridge_name)
+                bridge_list.append(bridge_name)
             add_interface_to_bridge(interface_name, bridge_name)
         count = count + 1
+
+def destroy_topology(euts, linuxchans):
+    for eut in euts:
+        destroy_vm(eut['name'])
+    for linuxchan in linuxchans:
+        destroy_vm(linuxchan['name'])
+
