@@ -9,7 +9,7 @@ import lib.clines as clines
 
 def prepare_parent_system():
     os.system(
-        'bash ' +
+        'sudo bash ' +
         path_from_root +
         clines.slash_char +
         'scripts/shell/init_system.bash'
