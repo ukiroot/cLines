@@ -17,11 +17,12 @@ def test(eut_name, eut_console, log_file):
         "':"
     )
     list_of_input_commands = [
-        'install system',
+        'install image',  # In version VyOS 1.1 was 'install system'
         'Yes',
         'Auto',
         'sda',
         'Yes',
+        '',
         '',
         '',
         clines.eut_password,
