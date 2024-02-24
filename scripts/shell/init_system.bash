@@ -32,7 +32,8 @@ apt -y install \
     python3-flask \
     pycodestyle \
     python3-requests \
-    python3-bashate
+    python3-bashate \
+    python3-pip
 }
 
 
@@ -193,13 +194,13 @@ function linuxchan_hostname_hack {
     DIR_FOR_IMAGE="/var/lib/libvirt/images/min_dist/"
     IMAGE_NAME="linuxchan.img"
     IMAGE="${DIR_FOR_IMAGE}${IMAGE_NAME}"
-    DISK_DEV="/dev/loop0"
+    DISK_DEV=""
     DISK_DEV_SECTION="p1"
-    DISK_DEV_1="${DISK_DEV}${DISK_DEV_SECTION}"
     DIR_CHROOT="/mnt/debian"
 
-    losetup "${DISK_DEV}" "${IMAGE}"
-    mount -v "${DISK_DEV_1}" "${DIR_CHROOT}"
+    DISK_DEV=`losetup -f --show "${IMAGE}"`
+    partprobe "${DISK_DEV}"
+    mount -v "${DISK_DEV}${DISK_DEV_SECTION}" "${DIR_CHROOT}"
     mount -v --bind /dev "${DIR_CHROOT}/dev"
     mount -vt devpts devpts "${DIR_CHROOT}/dev/pts"
     mount -vt proc proc "${DIR_CHROOT}/proc"

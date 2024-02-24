@@ -7,11 +7,11 @@ set -o errexit
 DIR_FOR_IMAGE="/var/lib/libvirt/images/min_dist/"
 IMAGE_NAME="linuxchan.img"
 IMAGE="${DIR_FOR_IMAGE}${IMAGE_NAME}"
-DISK_DEV="/dev/loop0"
+DISK_DEV=""
 DISK_DEV_SECTION="p1"
-DISK_DEV_1="${DISK_DEV}${DISK_DEV_SECTION}"
-DEBIAN_VER="stretch"
+DEBIAN_VER="bookworm"
 DIR_CHROOT="/mnt/debian"
+IMAGE_SIZE="2G"
 
 apt-get install -y \
     debootstrap \
@@ -19,11 +19,8 @@ apt-get install -y \
 mkdir -p "${DIR_FOR_IMAGE}"
 cd "${DIR_FOR_IMAGE}"
 rm -f "${IMAGE}"
-qemu-img create "${IMAGE}" 1G
-rmmod loop || true
-modprobe loop max_part=15
-losetup "${DISK_DEV}" "${IMAGE}"
-fdisk "${DISK_DEV}" << "EOF"
+qemu-img create "${IMAGE}" "${IMAGE_SIZE}"
+fdisk "${IMAGE}" << "EOF"
 n
 p
 1
@@ -32,40 +29,37 @@ p
 a
 w
 EOF
+DISK_DEV=`losetup -f --show "${IMAGE}"`
 partprobe "${DISK_DEV}"
-sleep 5
-mkfs.ext4 "${DISK_DEV_1}"
+mkfs.ext4 "${DISK_DEV}${DISK_DEV_SECTION}"
 mkdir -p "${DIR_CHROOT}"
-mount -v "${DISK_DEV_1}" "${DIR_CHROOT}"
-debootstrap --verbose --include=sudo,locales,nano,wget,grub-pc --arch amd64 "${DEBIAN_VER}" "${DIR_CHROOT}" http://www.nic.funet.fi/debian/
+mount -v "${DISK_DEV}${DISK_DEV_SECTION}" "${DIR_CHROOT}"
+debootstrap --verbose --include=sudo,locales,nano,wget,ca-certificates,grub-pc --arch amd64 "${DEBIAN_VER}" "${DIR_CHROOT}" http://www.nic.funet.fi/debian/
 cat > "${DIR_CHROOT}/etc/fstab" << "EOF"
 /dev/sda1       /               ext4        defaults        0       1
 EOF
 cat > "${DIR_CHROOT}/etc/apt/sources.list" << EOF
-deb http://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free
-deb-src http://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free
+deb https://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free-firmware
+deb-src https://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free-firmware
 
-deb http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-updates main contrib non-free
-deb-src http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-updates main contrib non-free
+deb https://www.nic.funet.fi/debian/ ${DEBIAN_VER}-updates main contrib non-free-firmware
+deb-src https://www.nic.funet.fi/debian/ ${DEBIAN_VER}-updates main contrib non-free-firmware
 
-deb http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-backports main contrib non-free
-deb-src http://www.nic.funet.fi/debian/ ${DEBIAN_VER}-backports main contrib non-free
+deb https://www.nic.funet.fi/debian/ ${DEBIAN_VER}-backports main contrib non-free-firmware
+deb-src https://www.nic.funet.fi/debian/ ${DEBIAN_VER}-backports main contrib non-free-firmware
 
-deb http://www.nic.funet.fi/debian-security ${DEBIAN_VER}/updates main contrib non-free
-deb-src http://www.nic.funet.fi/debian-security ${DEBIAN_VER}/updates main contrib non-free
+deb https://security.debian.org/debian-security ${DEBIAN_VER}-security main contrib non-free-firmware
+deb-src https://security.debian.org/debian-security ${DEBIAN_VER}-security main contrib non-free-firmware
 EOF
 
 cat > "${DIR_CHROOT}/root/postinst.sh" << EOF
 #!/bin/bash
 
+set -o xtrace
+set -o verbose
+set -o errexit
+
 apt-get update
-tzselect << "OEF"
-8
-39
-2
-1
-OEF
-TZ='Europe/Moscow'; export TZ
 useradd -m -s /bin/bash tester
 passwd tester << "OEF"
 tester
