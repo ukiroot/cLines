@@ -13,21 +13,24 @@ def test(eut_name, eut_console, log_file):
         eut_1_spawn
     )
     install_promts = (
-        '\]:|\]Mb:|\]MB:|' +
+        'y/N\]|' +
+        '[0-9]\)|' +
+        'vyos\)|' +
+        ': K\)|' +
+        '/dev/sda\)|' +
+        'Y/n\]|' +
         clines.eut_login +
         "':"
     )
     list_of_input_commands = [
         'install image',  # In version VyOS 1.1 was 'install system'
-        'Yes',
-        'Auto',
-        'sda',
-        'Yes',
-        '',
-        '',
-        '',
-        clines.eut_password,
-        clines.eut_password
+        'Yes',            # Would you like to continue? [y/N] Yes
+        '',               # What would you like to name this image? (Default: 1.5-rolling-202402240021)
+        '',               # Please enter a password for the "vyos" user (Default: vyos)
+        'S',              # What console should be used by default? (K: KVM, S: Serial, U: USB-Serial)? (Default: K)
+        '',               # Which one should be used for installation? (Default: /dev/sda)
+        'Y',              # Installation will delete all data on the drive. Continue? [y/N]
+
     ]
     for command in list_of_input_commands:
         clines.eut_operator_send_raw_command(
@@ -35,8 +38,9 @@ def test(eut_name, eut_console, log_file):
             install_promts,
             eut_1_spawn
         )
+
     clines.eut_operator_send_raw_command(
-        'sda',
+         'Y',             # Would you like to use all the free space on the drive? [Y/n]
         clines.eut_operator_promt,
         eut_1_spawn
     )
