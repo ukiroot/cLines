@@ -7,7 +7,7 @@ set -o errexit
 #Initializations of varibles
 DIR_MAIN=$(dirname `readlink -e "$0"`)
 VM_ISO="/var/lib/libvirt/images/VyOS.iso"
-VYOS_URL="https://downloads.vyos.io/rolling/current/amd64/vyos-1.2.0-rolling%2B201812080337-amd64.iso"
+VYOS_URL="https://legacy-lts-images.vyos.io/1.2.9-S1/vyos-1.2.9-S1-amd64.iso"
 #Max value for NUMBER_OF_EUT is 9
 NUMBER_OF_EUT="8"
 EUT_BRIDGE="eut_bridge"
@@ -28,18 +28,14 @@ LINUXCHCHAN=(
 function install_python_packages_via_apt {
 apt -y install \
     python3 \
-    python3-pexpect \
-    python3-flask \
-    pycodestyle \
-    python3-requests \
-    python3-bashate \
     python3-pip
 }
 
 
 function install_system_packages_via_apt {
 apt -y install \
-    telnet
+    telnet \
+    virt-manager
 }
 
 
