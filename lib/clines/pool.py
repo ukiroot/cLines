@@ -1,15 +1,20 @@
+import os
 import requests
 import json
-from .chars import *
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "./"))
+from chars import *
 
-rest_service_url = 'http://127.0.0.1:5000/restapi/v1.0/'
+ENVIRONMENT_IP=os.environ.get("ENVIRONMENT_IP")
+
+rest_service_url = 'http://{}:5000/restapi/v1.0/'.format(ENVIRONMENT_IP)
 pool_url = rest_service_url + 'pool/'
 pool_url_eut = pool_url + 'eut'
 pool_url_bridge = pool_url + 'bridge'
 pool_url_linuxchan = pool_url + 'linuxchan'
 transaction_url = rest_service_url + 'transaction'
 transaction_status_key = 'status'
-
+content_type_header = {"Content-Type": "application/json"}
 
 def resapi_request(method, uri, body='', headers='', debug=False):
     method = method.upper()

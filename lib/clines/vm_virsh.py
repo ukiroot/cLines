@@ -1,28 +1,32 @@
-import os
 import subprocess
 import re
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "./"))
+import pool
 
+def system(cmd):
+    pool.resapi_request('POST', pool.rest_service_url + '/cmd_by_http', {"cmd": cmd}, pool.content_type_header)
 
 def start_vm(vm):
-    os.system('sudo virsh start ' + vm)
+    system('sudo virsh start ' + vm)
 
 
 def destroy_vm(vm):
-    os.system('sudo virsh destroy ' + vm)
+    system('sudo virsh destroy ' + vm)
 
 
 def shutdown_vm(vm):
-    os.system('sudo virsh shutdown ' + vm)
+    system('sudo virsh shutdown ' + vm)
 
 
 def init_bridge_interface(bridge):
-    os.system('sudo ip link del ' + bridge)
-    os.system('sudo ip link add name ' + bridge + ' type bridge')
-    os.system('sudo ip link set dev ' + bridge + ' up')
+    system('sudo ip link del ' + bridge)
+    system('sudo ip link add name ' + bridge + ' type bridge')
+    system('sudo ip link set dev ' + bridge + ' up')
 
 
 def add_interface_to_bridge(interface, bridge):
-    os.system('sudo ip link set ' + interface + ' master ' + bridge)
+    system('sudo ip link set ' + interface + ' master ' + bridge)
 
 
 def get_vm_interface(vm):
@@ -35,3 +39,4 @@ def get_vm_interface(vm):
             shell=True
         ).decode("utf-8", "strict")
     )
+
