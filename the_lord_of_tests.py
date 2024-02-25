@@ -93,7 +93,7 @@ if __name__ == '__main__':
     pool_path = (
         path_from_root +
         clines.slash_char +
-        'services/pool_of_resources.py'
+        'services/app.py'
     )
     config = (
         path_from_root +
