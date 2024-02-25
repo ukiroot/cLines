@@ -166,12 +166,12 @@ function create_eut_config {
           <address type='pci' domain='0x0000' bus='0x00' slot='0x08' function='0x0'/>
         </interface>
         <serial type='tcp'>
-          <source mode='bind' host='127.0.0.1' service='${CONSOLE_PORT}'/>
+          <source mode='bind' host='0.0.0.0' service='${CONSOLE_PORT}'/>
           <protocol type='telnet'/>
           <target port='0'/>
         </serial>
         <console type='tcp'>
-          <source mode='bind' host='127.0.0.1' service='${CONSOLE_PORT}'/>
+          <source mode='bind' host='0.0.0.0' service='${CONSOLE_PORT}'/>
           <protocol type='telnet'/>
           <target type='serial' port='0'/>
         </console>
@@ -328,12 +328,12 @@ function create_linuxchan_config {
           <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
         </interface>
         <serial type='tcp'>
-          <source mode='bind' host='127.0.0.1' service='${CONSOLE_PORT}'/>
+          <source mode='bind' host='0.0.0.0' service='${CONSOLE_PORT}'/>
           <protocol type='telnet'/>
           <target port='0'/>
         </serial>
         <console type='tcp'>
-          <source mode='bind' host='127.0.0.1' service='${CONSOLE_PORT}'/>
+          <source mode='bind' host='0.0.0.0' service='${CONSOLE_PORT}'/>
           <protocol type='telnet'/>
           <target type='serial' port='0'/>
         </console>

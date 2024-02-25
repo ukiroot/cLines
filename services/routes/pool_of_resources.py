@@ -1,8 +1,5 @@
-from flask import Flask, jsonify, abort, make_response, request
-
-
-app = Flask(__name__)
-
+from flask import jsonify, abort, request
+from . import routes
 
 #  pool = {
 #      'eut':
@@ -51,12 +48,12 @@ transaction = {
 }
 
 
-@app.route('/restapi/v1.0/transaction', methods=['GET'])
+@routes.route('/restapi/v1.0/transaction', methods=['GET'])
 def get_transaction():
     return jsonify(transaction)
 
 
-@app.route('/restapi/v1.0/transaction', methods=['PUT'])
+@routes.route('/restapi/v1.0/transaction', methods=['PUT'])
 def update_transaction():
     if 'who' in request.json:
         transaction[tr_key_w] = request.json[tr_key_w]
@@ -64,12 +61,12 @@ def update_transaction():
     return jsonify(transaction)
 
 
-@app.route('/restapi/v1.0/pool/<resource>', methods=['GET'])
+@routes.route('/restapi/v1.0/pool/<resource>', methods=['GET'])
 def get_items(resource):
     return jsonify({resource: pool[resource]})
 
 
-@app.route('/restapi/v1.0/pool/<resource>/<int:eut_id>', methods=['GET'])
+@routes.route('/restapi/v1.0/pool/<resource>/<int:eut_id>', methods=['GET'])
 def get_item(resource, eut_id):
     eut = [item for item in pool[resource] if item['id'] == eut_id]
     if len(eut) == 0:
@@ -77,7 +74,7 @@ def get_item(resource, eut_id):
     return jsonify({resource: eut})
 
 
-@app.route('/restapi/v1.0/pool/<resource>', methods=['POST'])
+@routes.route('/restapi/v1.0/pool/<resource>', methods=['POST'])
 def create_item(resource):
     if not request.json or not ('name' or 'settings') in request.json:
         abort(400)
@@ -96,7 +93,7 @@ def create_item(resource):
     return jsonify({resource: eut}), 201
 
 
-@app.route('/restapi/v1.0/pool/<resource>/<int:eut_id>', methods=['PUT'])
+@routes.route('/restapi/v1.0/pool/<resource>/<int:eut_id>', methods=['PUT'])
 def update_item(resource, eut_id):
     instance = [item for item in pool[resource] if item['id'] == eut_id]
     if len(instance) == 0:
@@ -108,7 +105,7 @@ def update_item(resource, eut_id):
     return jsonify({resource: pool[resource][id]})
 
 
-@app.route('/restapi/v1.0/pool/<resource>/<int:eut_id>', methods=['DELETE'])
+@routes.route('/restapi/v1.0/pool/<resource>/<int:eut_id>', methods=['DELETE'])
 def delete_item(resource, eut_id):
     instance = [item for item in pool[resource] if item['id'] == eut_id]
     if len(instance) == 0:
@@ -117,12 +114,3 @@ def delete_item(resource, eut_id):
     pool[resource].remove(pool[resource][id])
     print(pool[resource][id])
     return jsonify({'result': True})
-
-
-@app.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
-
-
-if __name__ == '__main__':
-    app.run(debug=False)

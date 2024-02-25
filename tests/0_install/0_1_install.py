@@ -2,8 +2,10 @@ import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import lib.clines as clines
 
+ENVIRONMENT_IP=os.environ.get('ENVIRONMENT_IP')
 
 def test(eut_name, eut_console, log_file):
+    clines.destroy_vm(eut_name)
     clines.start_vm(eut_name)
     eut_1_spawn = clines.attach_to_cli(eut_console, log_file)
     clines.eut_get_operator(

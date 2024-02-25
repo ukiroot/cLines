@@ -4,17 +4,10 @@ import os
 import datetime
 import time
 import subprocess
+from jinja2 import Template
 import lib.clines as clines
 
-
-def prepare_parent_system():
-    os.system(
-        'sudo bash ' +
-        path_from_root +
-        clines.slash_char +
-        'scripts/shell/init_system.bash'
-    )
-
+ENVIRONMENT_IP='192.168.1.78'
 
 def start_pool_of_resources(log):
     return subprocess.Popen(
@@ -35,7 +28,8 @@ def stop_services(list_of_services):
 
 def get_list_of_tests(config):
     with open(config, 'r') as f:
-        config = json.load(f)[json_root]
+        renderd_config = Template(f.read()).render(ENVIRONMENT_IP=ENVIRONMENT_IP)
+        config = json.loads(renderd_config)[json_root]
     for group in config:
         for test in config[group]:
             peace_of_test_path = (
@@ -99,7 +93,7 @@ if __name__ == '__main__':
     pool_path = (
         path_from_root +
         clines.slash_char +
-        'services/pool_of_resources.py'
+        'services/app.py'
     )
     config = (
         path_from_root +
@@ -112,7 +106,6 @@ if __name__ == '__main__':
     pool_log = open(pool_log_file, 'w')
     proc = start_pool_of_resources(pool_log)
     list_of_services_proc.append({'pool': proc})
-    prepare_parent_system()
     get_list_of_tests(config)
     #  Stop all services
     stop_services(list_of_services_proc)

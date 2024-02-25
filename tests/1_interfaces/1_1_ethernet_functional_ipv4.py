@@ -1,6 +1,9 @@
 import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import lib.clines as clines
 
+ENVIRONMENT_IP=os.environ.get('ENVIRONMENT_IP')
 
 def pretest():
     clines.init_topology(euts, linuxchans, bridges, topology)
