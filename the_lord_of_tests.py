@@ -9,15 +9,6 @@ import lib.clines as clines
 
 ENVIRONMENT_IP='192.168.1.78'
 
-def prepare_parent_system():
-    os.system(
-        'sudo bash ' +
-        path_from_root +
-        clines.slash_char +
-        'scripts/shell/init_system.bash'
-    )
-
-
 def start_pool_of_resources(log):
     return subprocess.Popen(
         [
@@ -115,7 +106,6 @@ if __name__ == '__main__':
     pool_log = open(pool_log_file, 'w')
     proc = start_pool_of_resources(pool_log)
     list_of_services_proc.append({'pool': proc})
-    prepare_parent_system()
     get_list_of_tests(config)
     #  Stop all services
     stop_services(list_of_services_proc)
