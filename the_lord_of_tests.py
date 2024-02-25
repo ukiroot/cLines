@@ -4,8 +4,10 @@ import os
 import datetime
 import time
 import subprocess
+from jinja2 import Template
 import lib.clines as clines
 
+ENVIRONMENT_IP='192.168.1.78'
 
 def prepare_parent_system():
     os.system(
@@ -35,7 +37,8 @@ def stop_services(list_of_services):
 
 def get_list_of_tests(config):
     with open(config, 'r') as f:
-        config = json.load(f)[json_root]
+        renderd_config = Template(f.read()).render(ENVIRONMENT_IP=ENVIRONMENT_IP)
+        config = json.loads(renderd_config)[json_root]
     for group in config:
         for test in config[group]:
             peace_of_test_path = (

@@ -4,13 +4,13 @@
             "0_1_install.py": {
                 "iteration_1": {
                     "eut_name" : "EUT_1",
-                    "eut_console" : "telnet 127.0.0.1 7001",
+                    "eut_console" : "telnet {{ ENVIRONMENT_IP }} 7001",
                     "test_summary" : "Deploy VyOS to EUT_1",
                     "weight": "0"
                 },
                 "iteration_2": {
                     "eut_name" : "EUT_2",
-                    "eut_console" : "telnet 127.0.0.1 7002",
+                    "eut_console" : "telnet {{ ENVIRONMENT_IP }} 7002",
                     "test_summary" : "Deploy VyOS to EUT_2",
                     "weight": "0"
                 }
@@ -41,13 +41,13 @@
                 "iteration_1": {
                     "linuxchan_name" : "lupus",
                     "test_summary" : "Add VM with name 'lupus'",
-                    "eut_console" : "telnet 127.0.0.1 7703",
+                    "eut_console" : "telnet {{ ENVIRONMENT_IP }} 7703",
                     "weight": "0"
                 },
                 "iteration_2": {
                     "linuxchan_name" : "vulpecula",
                     "test_summary" : "Add VM with name 'vulpecula'",
-                    "eut_console" : "telnet 127.0.0.1 7705",
+                    "eut_console" : "telnet {{ ENVIRONMENT_IP }} 7705",
                     "weight": "0"
                 }
             }
