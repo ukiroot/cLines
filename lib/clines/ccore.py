@@ -29,24 +29,9 @@ eut_for_login_promt = (
 eut_exit_cmd = 'exit'
 
 
-def create_dir(path):
-    dir_name = os.path.dirname(path)
-    if dir_name != empty_char:
-        if not os.path.exists(dir_name):
-            os.makedirs(dir_name, exist_ok=True)
-        return True
-    return False
-
-
-def create_file(log_file):
-    create_dir(log_file)
-    return open(log_file, 'w')
-
-
-def attach_to_cli(command, log_file=sys.stdout):
+def attach_to_cli(command):
     spawn = pexpect.spawnu(command, timeout=270)
-    if create_dir(log_file):
-        spawn.logfile = create_file(log_file)
+    spawn.logfile = sys.stdout
     return spawn
 
 

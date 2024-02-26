@@ -2,12 +2,16 @@ import sys, os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import lib.clines as clines
+import configs.env
 
-def test(eut_name, eut_console, log_file):
+
+def install_vyos_from_iso_to_disk(eut):
+    eut_name = eut.get('name')
+    eut_console = configs.env.CONSOLE_TEMPLATE.format(configs.env.ENVIRONMENT_IP, eut.get("console_port"))
 
     clines.destroy_vm(eut_name)
     clines.start_vm(eut_name)
-    eut_1_spawn = clines.attach_to_cli(eut_console, log_file)
+    eut_1_spawn = clines.attach_to_cli(eut_console)
     clines.eut_get_operator(
         clines.eut_login,
         clines.eut_password,
@@ -51,12 +55,5 @@ def test(eut_name, eut_console, log_file):
     clines.destroy_vm(eut_name)
 
 
-if __name__ == '__main__':
-
-    args = clines.parse_test_args(sys.argv[1:])
-    log_file = args.log
-    eut_name = args.eut_name
-    eut_console = args.eut_console
-    test_summary = args.test_summary
-    weight = args.weight
-    test(eut_name, eut_console, log_file)
+def test_install_eut_1():
+    install_vyos_from_iso_to_disk(configs.env.EUT_1)
