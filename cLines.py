@@ -6,8 +6,7 @@ import time
 import subprocess
 from jinja2 import Template
 import lib.clines as clines
-
-ENVIRONMENT_IP='192.168.1.78'
+import configs.env
 
 def start_pool_of_resources(log):
     return subprocess.Popen(
@@ -28,7 +27,7 @@ def stop_services(list_of_services):
 
 def get_list_of_tests(config):
     with open(config, 'r') as f:
-        renderd_config = Template(f.read()).render(ENVIRONMENT_IP=ENVIRONMENT_IP)
+        renderd_config = Template(f.read()).render(ENVIRONMENT_IP=configs.env.ENVIRONMENT_IP)
         config = json.loads(renderd_config)[json_root]
     for group in config:
         for test in config[group]:

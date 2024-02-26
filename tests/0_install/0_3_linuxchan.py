@@ -3,8 +3,6 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import lib.clines as clines
 
-ENVIRONMENT_IP=os.environ.get('ENVIRONMENT_IP')
-
 def test(linuxchan_name, console, log_file):
     try:
         clines.start_vm(linuxchan_name)

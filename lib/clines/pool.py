@@ -4,10 +4,9 @@ import json
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), "./"))
 from chars import *
+import configs.env
 
-ENVIRONMENT_IP=os.environ.get("ENVIRONMENT_IP")
-
-rest_service_url = 'http://{}:5000/restapi/v1.0/'.format(ENVIRONMENT_IP)
+rest_service_url = 'http://{}:5000/restapi/v1.0/'.format(configs.env.ENVIRONMENT_IP)
 pool_url = rest_service_url + 'pool/'
 pool_url_eut = pool_url + 'eut'
 pool_url_bridge = pool_url + 'bridge'
