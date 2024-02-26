@@ -113,6 +113,6 @@ def eut_operator_sudo(cmd, spawn):
     spawn.expect(eut_operator_promt)
 
 
-def eut_operator_send_raw_command(cmd, promt, spawn):
+def eut_operator_send_raw_command(cmd, after_promt, spawn, timeout=10):
     spawn.sendline(cmd)
-    spawn.expect(promt)
+    spawn.expect(after_promt, timeout=timeout)
