@@ -1,11 +1,25 @@
-import subprocess
+import json
 import re
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), "./"))
 import pool
 
 def system(cmd):
-    pool.resapi_request('POST', pool.rest_service_url + '/cmd_by_http', {"cmd": cmd}, pool.content_type_header)
+    pool.resapi_request(
+        'POST',
+        '{}{}'.format(pool.rest_service_url, '/cmd_by_http'),
+        {"cmd": cmd}, pool.content_type_header
+    )
+
+
+def get_vm_interfaces_request(vm_name):
+    response = pool.resapi_request(
+        'POST',
+        '{}{}'.format(pool.rest_service_url, '/get_vm_interfaces'),
+        {"vm": vm_name}, pool.content_type_header
+    )
+    return json.loads(response.text)['interfaces']
+
 
 def start_vm(vm):
     system('sudo virsh start ' + vm)
@@ -29,14 +43,9 @@ def add_interface_to_bridge(interface, bridge):
     system('sudo ip link set ' + interface + ' master ' + bridge)
 
 
-def get_vm_interface(vm):
+def get_vm_interfaces(vm):
     return re.findall(
         ('vnet[0-9]+'),
-        subprocess.check_output(
-            'sudo virsh domiflist ' +
-            vm +
-            "| grep vnet | awk '{print $1}'",
-            shell=True
-        ).decode("utf-8", "strict")
+        get_vm_interfaces_request(vm)
     )
 

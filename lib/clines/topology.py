@@ -1,6 +1,6 @@
 import re
 from .vm_virsh import \
-    get_vm_interface, \
+    get_vm_interfaces, \
     add_interface_to_bridge, \
     destroy_vm, \
     start_vm, \
@@ -37,7 +37,7 @@ def init_topology(euts, linuxchans, brs_resource, topology):
 
     for node in topology_of_node:
         start_vm(node_names[count])
-        vm_interfaces = get_vm_interface(node_names[count])
+        vm_interfaces = get_vm_interfaces(node_names[count])
         topology_of_interface = update_eth(vm_interfaces, node).split(",")
         for interface in topology_of_interface:
             interface_name = interface.split(":")[0]
