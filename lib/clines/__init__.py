@@ -1,11 +1,10 @@
 from .chars import *
-from .clines_args import *
 from .vm_virsh import \
     start_vm, \
     destroy_vm, \
     shutdown_vm, \
     init_bridge_interface, \
-    get_vm_interface
+    get_vm_interfaces
 from .topology import \
     update_br, \
     init_topology, \
@@ -28,7 +27,7 @@ from .pool import \
     get_bridges, \
     get_euts, \
     get_linuxchans
-from .ccore import create_dir, \
+from .ccore import \
     attach_to_cli, \
     eut_login, \
     eut_password, \
