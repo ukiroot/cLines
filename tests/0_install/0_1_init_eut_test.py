@@ -1,5 +1,7 @@
 import sys, os
 
+import pytest
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import lib.clines as clines
 import configs.env
@@ -72,17 +74,15 @@ def install_vyos_from_iso_to_disk(eut):
     clines.destroy_vm(eut_name)
 
 
-def test_install_eut_1():
-    install_vyos_from_iso_to_disk(configs.env.EUT_1)
-
-
-def test_install_eut_2():
-    install_vyos_from_iso_to_disk(configs.env.EUT_2)
-
-
-def test_install_eut_3():
-    install_vyos_from_iso_to_disk(configs.env.EUT_3)
-
-
-def test_install_eut_4():
-    install_vyos_from_iso_to_disk(configs.env.EUT_4)
+@pytest.mark.preparation_resources
+@pytest.mark.parametrize(
+    'eut_config',
+    [
+        configs.env.EUT_1,
+        configs.env.EUT_2,
+        configs.env.EUT_3,
+        configs.env.EUT_4
+    ]
+)
+def test_install_eut(eut_config):
+    install_vyos_from_iso_to_disk(eut_config)
