@@ -16,7 +16,7 @@ LINUXCHCHAN=(
     "ursamajor" \
     "ursaminor" \
     "lupus" \
-    "pisces" \
+    "virgo" \
     "vulpecula" \
     "aquarius" \
     "aries" \

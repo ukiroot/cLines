@@ -30,3 +30,13 @@ if __name__ == '__main__':
     clines.release_all_resource()
 
     test()
+
+#    "1_1_ethernet_functional_ipv4.py": {
+#        "iteration_1": {
+#            "EUTs" : "1",
+#            "linuxchans" : "1",
+#            "bridges" : "1",
+#            "topology" : "eth0:br0,eth1:br0,eth2:br0,eth3:br0|eth0:br0",
+#            "weight": "1"
+#        }
+#    }
