@@ -68,7 +68,6 @@ def install_vyos_from_iso_to_disk(eut):
         eut_spawn,
         timeout=50
     )
-    clines.add_eut(clines.get_resource_body(eut_name, eut_console))
     clines.destroy_vm(eut_name)
 
 

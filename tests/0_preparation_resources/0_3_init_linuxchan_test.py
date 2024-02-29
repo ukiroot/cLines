@@ -28,6 +28,5 @@ def test_init_linuxchan(linuxchan_config):
         linuxchan_1_spawn = clines.attach_to_cli(lin_console)
         clines.linuxchan_grub(lin_name, linuxchan_1_spawn)
         clines.linuxchan_get_shell(lin_name, linuxchan_1_spawn)
-        clines.add_linuxchan(clines.get_resource_body(lin_name, ''))
     finally:
         clines.destroy_vm(lin_name)

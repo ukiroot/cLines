@@ -6,6 +6,7 @@ import lib.clines as clines
 import configs.env
 
 @pytest.mark.preparation_resources
+@pytest.mark.init_db
 @pytest.mark.parametrize(
     'bridge_config',
     [
@@ -16,4 +17,4 @@ import configs.env
     ]
 )
 def test_init_bridge(bridge_config):
-    clines.add_bridge(clines.get_resource_body(bridge_config.get('name'), ''))
+    clines.init_bridge_interface(bridge_config['name'])
