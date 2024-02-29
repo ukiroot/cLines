@@ -7,7 +7,7 @@ set -o errexit
 #Initializations of varibles
 DIR_MAIN=$(dirname `readlink -e "$0"`)
 VM_ISO="/var/lib/libvirt/images/VyOS.iso"
-VYOS_URL="https://legacy-lts-images.vyos.io/1.2.9-S1/vyos-1.2.9-S1-amd64.iso"
+VYOS_URL="https://github.com/vyos/vyos-rolling-nightly-builds/releases/download/1.5-rolling-202402291036/vyos-1.5-rolling-202402291036-amd64.iso"
 #Max value for NUMBER_OF_EUT is 9
 NUMBER_OF_EUT="8"
 EUT_BRIDGE="eut_bridge"

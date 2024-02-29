@@ -51,7 +51,17 @@ pytest \
     -v \
     -s \
     -l \
-    -n4 \                      # Run tests in 4 parallel threads
-    -m "$SUITE_NAME" # Run tests which marked '@pytest.mark.preparation_resources'
+    -n4 \                           # Run tests in 4 parallel threads
+    -m "preparation_resources"      # Run tests which marked '@pytest.mark.preparation_resources'
 ```
-### Run 'preparation_resources' suite
+### Run 'end_to_end' suite
+```
+pytest \
+    -v \
+    -s \
+    -l \
+    -n4 \
+    --dist=loadfile --dist=each \    # Each pytest (python) process execute tests consequentially from a source file
+                                \    # it's guarantee same context of static (global) variables in test scenario in source file
+    -m "end_to_end"
+```

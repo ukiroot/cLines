@@ -1,10 +1,13 @@
 import pexpect
 import re
-import os
 import sys
 import time
-from .chars import *
 
+empty_char = ''
+space_char = ' '
+slash_char = '/'
+pipe_char = '|'
+endline_char = '$'
 eut_login = 'vyos'
 eut_password = 'vyos'
 eut_hostname = 'vyos'
@@ -27,11 +30,13 @@ eut_for_login_promt = (
     + eut_admin_promt
 )
 eut_exit_cmd = 'exit'
-
+#infra_hostname=''
 
 def attach_to_cli(command):
+    #spawn = pexpect.spawnu(command, timeout=270, encoding='utf-8')
+    print('\nService Log Message: Start new pexpect session. Run command "{}"'.format(command))
     spawn = pexpect.spawnu(command, timeout=270)
-    spawn.logfile = sys.stdout
+    spawn.logfile_read = sys.stdout
     return spawn
 
 
@@ -41,7 +46,9 @@ def linuxchan_grub(name, spawn):
     spawn.expect('\*[A-Za-z]+ ')
     for i in range(20):
         spawn.send(key)
-        time.sleep(1)
+        # use sleep only for debug purposes
+        # if need human readable pause in switch between grub menu
+        #time.sleep(1)
         spawn.expect('\*[A-Za-z]+ ')
         if name in spawn.after:
             break
@@ -66,6 +73,30 @@ def linuxchan_get_shell(name, spawn):
     spawn.expect("Password:")
     spawn.sendline('admin')
     spawn.expect("root@" + name + r':~#')
+
+
+def infra_get_shell(login, password, spawn):
+    global infra_hostname
+    infra_hostname = login
+    spawn.expect('\]\)\?\ ')
+    spawn.sendline('yes')
+    spawn.expect('assword:')
+    spawn.sendline(password)
+    spawn.expect('\\{}'.format( endline_char))
+    spawn.sendline('PS1="infra@infra:~$"')
+    spawn.expect('{}@{}{}$'.format( login, login, eut_operator_promt))
+    spawn.sendline('')
+    spawn.expect('{}@{}{}$'.format( login, login, eut_operator_promt))
+
+
+
+def run_infra_cmd(cmd, spawn):
+    #spawn.setecho(False)
+    spawn.sendline('')
+    spawn.expect('{}@{}{}$'.format( infra_hostname, infra_hostname, eut_operator_promt))
+    #spawn.setecho(True)
+    spawn.sendline(cmd)
+    spawn.expect('{}@{}{}$'.format( infra_hostname, infra_hostname, eut_operator_promt))
 
 
 def print_all(spawn):

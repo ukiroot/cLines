@@ -1,4 +1,6 @@
 ENVIRONMENT_IP='192.168.1.78'
+ENVIRONMENT_LOGIN='infra'
+ENVIRONMENT_PASSOWORD='infra'
 CONSOLE_TEMPLATE="telnet {} {}"
 # Resources description
 # EUT - equipment under test
