@@ -21,10 +21,9 @@ import configs.env
 )
 def test_init_linuxchan(linuxchan_config):
     lin_name = linuxchan_config.get('name')
-    lin_console = configs.env.CONSOLE_TEMPLATE.format(configs.env.ENVIRONMENT_IP, linuxchan_config.get("console_port"))
     try:
         clines.start_vm(lin_name)
-        linuxchan_1_spawn = clines.attach_to_cli(lin_console)
+        linuxchan_1_spawn = clines.attach_to_cli_vm_telnet_console(linuxchan_config.get("console_port"))
         clines.linuxchan_grub(lin_name, linuxchan_1_spawn)
         clines.linuxchan_get_shell(lin_name, linuxchan_1_spawn)
     finally:

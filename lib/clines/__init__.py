@@ -17,7 +17,8 @@ from .pool import \
     release_euts, \
     release_linuxchans
 from .ccore import \
-    attach_to_cli, \
+    attach_to_cli_raw, \
+    attach_to_cli_vm_telnet_console, \
     eut_login, \
     eut_password, \
     eut_hostname, \
@@ -28,5 +29,4 @@ from .ccore import \
     linuxchan_grub, \
     linuxchan_get_shell, \
     infra_get_shell, \
-    attach_to_cli, \
     run_infra_cmd

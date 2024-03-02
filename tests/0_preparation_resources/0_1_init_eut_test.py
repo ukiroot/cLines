@@ -7,11 +7,10 @@ import configs.env
 
 def install_vyos_from_iso_to_disk(eut):
     eut_name = eut.get('name')
-    eut_console = configs.env.CONSOLE_TEMPLATE.format(configs.env.ENVIRONMENT_IP, eut.get("console_port"))
 
     clines.destroy_vm(eut_name)
     clines.start_vm(eut_name)
-    eut_spawn = clines.attach_to_cli(eut_console)
+    eut_spawn = clines.attach_to_cli_vm_telnet_console(eut.get("console_port"))
     print('Step 0. Login to EUT')
     clines.eut_get_operator(
         clines.eut_login,

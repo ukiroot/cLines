@@ -2,6 +2,7 @@ import pexpect
 import re
 import sys
 import time
+import configs.env
 
 empty_char = ''
 space_char = ' '
@@ -32,7 +33,10 @@ eut_for_login_promt = (
 eut_exit_cmd = 'exit'
 #infra_hostname=''
 
-def attach_to_cli(command):
+def attach_to_cli_vm_telnet_console(port):
+    return attach_to_cli_raw(configs.env.CONSOLE_TEMPLATE.format(configs.env.ENVIRONMENT_IP, port))
+
+def attach_to_cli_raw(command):
     #spawn = pexpect.spawnu(command, timeout=270, encoding='utf-8')
     print('\nService Log Message: Start new pexpect session. Run command "{}"'.format(command))
     spawn = pexpect.spawnu(command, timeout=270)

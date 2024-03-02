@@ -1,11 +1,11 @@
 import re
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), "./"))
-from ccore import infra_get_shell, attach_to_cli, run_infra_cmd
+from ccore import infra_get_shell, attach_to_cli_raw, run_infra_cmd
 sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import configs.env
 
-infra_spawn = attach_to_cli('ssh {}@{}'.format(configs.env.ENVIRONMENT_LOGIN, configs.env.ENVIRONMENT_IP))
+infra_spawn = attach_to_cli_raw('ssh {}@{}'.format(configs.env.ENVIRONMENT_LOGIN, configs.env.ENVIRONMENT_IP))
 infra_get_shell(configs.env.ENVIRONMENT_LOGIN, configs.env.ENVIRONMENT_PASSOWORD, infra_spawn)
 
 def system(cmd):
@@ -19,6 +19,7 @@ def get_vm_interfaces_request(vm):
 
 
 def start_vm(vm):
+    destroy_vm(vm)
     system('sudo virsh start {}'.format(vm))
 
 
