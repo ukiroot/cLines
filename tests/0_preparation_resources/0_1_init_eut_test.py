@@ -13,9 +13,6 @@ def install_vyos_from_iso_to_disk(eut):
     eut_spawn = clines.attach_to_cli_vm_telnet_console(eut.get("console_port"))
     print('Step 0. Login to EUT')
     clines.eut_get_operator(
-        clines.eut_login,
-        clines.eut_password,
-        clines.eut_hostname,
         eut_spawn
     )
     print('Step 1. Run operator command "install image"')

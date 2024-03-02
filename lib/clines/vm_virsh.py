@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../../"))
 import configs.env
 
 infra_spawn = attach_to_cli_raw('ssh {}@{}'.format(configs.env.ENVIRONMENT_LOGIN, configs.env.ENVIRONMENT_IP))
-infra_get_shell(configs.env.ENVIRONMENT_LOGIN, configs.env.ENVIRONMENT_PASSOWORD, infra_spawn)
+infra_get_shell(configs.env.ENVIRONMENT_LOGIN, configs.env.ENVIRONMENT_PASSWORD, infra_spawn)
 
 def system(cmd):
     run_infra_cmd(cmd, infra_spawn)

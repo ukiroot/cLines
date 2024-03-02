@@ -1,8 +1,12 @@
 ENVIRONMENT_IP='192.168.1.78'
 ENVIRONMENT_LOGIN='infra'
-ENVIRONMENT_PASSOWORD='infra'
+ENVIRONMENT_PASSWORD= 'infra'
 CONSOLE_TEMPLATE="telnet {} {}"
 # Resources description
+EUT_LOGIN='vyos'
+EUT_PASSWORD='vyos'
+LINUXCHAN_LOGIN='root'
+LINUXCHAN_PASSWORD='admin'
 # EUT - equipment under test
 EUT_1={"name": "EUT_1", "console_port": "7001"}
 EUT_2={"name": "EUT_2", "console_port": "7002"}

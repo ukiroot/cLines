@@ -9,8 +9,10 @@ space_char = ' '
 slash_char = '/'
 pipe_char = '|'
 endline_char = '$'
-eut_login = 'vyos'
-eut_password = 'vyos'
+eut_login = configs.env.EUT_LOGIN
+eut_password = configs.env.EUT_PASSWORD
+linuxchan_login = configs.env.LINUXCHAN_LOGIN
+linuxchan_password = configs.env.LINUXCHAN_PASSWORD
 eut_hostname = 'vyos'
 eut_login_promt = 'login: ' + endline_char
 eut_password_promt = 'Password: ' + endline_char
@@ -73,9 +75,9 @@ def linuxchan_grub(name, spawn):
 def linuxchan_get_shell(name, spawn):
     spawn.sendline('')
     spawn.expect(name + " login:")
-    spawn.sendline('root')
+    spawn.sendline(linuxchan_login)
     spawn.expect("Password:")
-    spawn.sendline('admin')
+    spawn.sendline(linuxchan_password)
     spawn.expect("root@" + name + r':~#')
 
 
@@ -111,28 +113,28 @@ def print_all(spawn):
     print('#####:')
 
 
-def eut_get_operator(login, password, hostname, spawn):
+def eut_get_operator(spawn):
     spawn.sendline(empty_char)
     spawn.expect(eut_for_login_promt)
     if re.search(eut_operator_promt, spawn.after):
         True
     elif re.search(eut_login_promt, spawn.after):
-        spawn.sendline(login)
+        spawn.sendline(eut_login)
         spawn.expect(eut_password_promt)
-        spawn.sendline(password)
+        spawn.sendline(eut_password)
         spawn.expect(eut_operator_promt)
     elif re.search(eut_admin_promt, spawn.after):
         spawn.sendline(eut_exit_cmd)
         spawn.expect(eut_operator_promt)
 
 
-def eut_get_admin(login, password, hostname, spawn):
+def eut_get_admin(spawn):
     spawn.sendline(empty_char)
     spawn.expect(eut_for_login_promt)
     if re.search(eut_admin_promt, spawn.after):
         True
     elif re.search(eut_login_promt, spawn.after):
-        eut_get_operator(login, password, hostname, spawn)
+        eut_get_operator(spawn)
         eut_from_operator_to_admin(spawn)
     elif re.search(eut_operator_promt, spawn.after):
         eut_from_operator_to_admin(spawn)
