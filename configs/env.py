@@ -1,8 +1,12 @@
 ENVIRONMENT_IP='192.168.1.78'
 ENVIRONMENT_LOGIN='infra'
-ENVIRONMENT_PASSOWORD='infra'
+ENVIRONMENT_PASSWORD= 'infra'
 CONSOLE_TEMPLATE="telnet {} {}"
 # Resources description
+EUT_LOGIN='vyos'
+EUT_PASSWORD='vyos'
+LINUXCHAN_LOGIN='root'
+LINUXCHAN_PASSWORD='admin'
 # EUT - equipment under test
 EUT_1={"name": "EUT_1", "console_port": "7001"}
 EUT_2={"name": "EUT_2", "console_port": "7002"}
@@ -26,3 +30,11 @@ LINUXCHAN_5={'name': 'vulpecula', "console_port": "7705"}
 LINUXCHAN_6={'name': 'aquarius',  "console_port": "7706"}
 LINUXCHAN_7={'name': 'aries',     "console_port": "7707"}
 LINUXCHAN_8={'name': 'pisces',    "console_port": "7708"}
+ursamajor=LINUXCHAN_1
+ursaminor=LINUXCHAN_2
+lupus=LINUXCHAN_3
+virgo=LINUXCHAN_4
+vulpecula=LINUXCHAN_5
+aquarius=LINUXCHAN_6
+aries=LINUXCHAN_7
+pisces=LINUXCHAN_8
