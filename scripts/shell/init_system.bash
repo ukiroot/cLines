@@ -145,13 +145,13 @@ function create_eut_config {
           <mac address='${MAC_1}'/>
           <source bridge='${EUT_BRIDGE}'/>
           <model type='rtl8139'/>
-          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
         </interface>
         <interface type='bridge'>
           <mac address='${MAC_2}'/>
           <source bridge='${EUT_BRIDGE}'/>
           <model type='rtl8139'/>
-          <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
         </interface>
         <interface type='bridge'>
           <mac address='${MAC_3}'/>
@@ -319,13 +319,13 @@ function create_linuxchan_config {
           <mac address='${MAC_1}'/>
           <source bridge='${EUT_BRIDGE}'/>
           <model type='rtl8139'/>
-          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
         </interface>
         <interface type='bridge'>
           <mac address='${MAC_2}'/>
           <source bridge='${EUT_BRIDGE}'/>
           <model type='rtl8139'/>
-          <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
         </interface>
         <serial type='tcp'>
           <source mode='bind' host='0.0.0.0' service='${CONSOLE_PORT}'/>
