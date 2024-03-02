@@ -222,7 +222,7 @@ EOF
 seq 8 | while read VM_ID; do
     HOSTNAME=${LINUXCHCHAN[$(( ${VM_ID} - 1 ))]}
     cat /boot/grub/grub.cfg | grep -A20 "menuentry 'Debian GNU/Linux'" | grep -B 20 '^}' | \
-    sed -e 's/Debian GNU\/Linux/'${HOSTNAME}'/' -e 's/console=ttyS0/console=ttyS0 hostname='${HOSTNAME}'/' >> /etc/grub.d/40_custom
+    sed -e 's/Debian GNU\/Linux/'${HOSTNAME}'/' -e 's/console=ttyS0/console=ttyS0 net.ifnames=0 biosdevname=0 hostname='${HOSTNAME}'/' >> /etc/grub.d/40_custom
 done
 update-grub2
 EOF
