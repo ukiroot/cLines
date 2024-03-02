@@ -23,10 +23,17 @@ from .ccore import \
     eut_password, \
     eut_hostname, \
     eut_password, \
+    eut_wait_login_promt, \
     eut_get_operator, \
+    eut_get_admin, \
+    eut_admin_send_raw_command, \
     eut_operator_send_raw_command, \
     eut_operator_promt, \
     linuxchan_grub, \
     linuxchan_get_shell, \
+    linuxchan_set_ip, \
+    linuxchan_default_gw, \
+    linuxchan_ping, \
     infra_get_shell, \
-    run_infra_cmd
+    run_infra_cmd, \
+    information_log

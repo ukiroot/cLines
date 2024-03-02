@@ -30,6 +30,10 @@ def init():
     # Init Step 3: start EUT VMs.
     clines.start_vm(eut_names[0])
     clines.start_vm(eut_names[1])
+    eut0_spawn = clines.attach_to_cli_vm_telnet_console(eut0.get("console_port"))
+    eut1_spawn = clines.attach_to_cli_vm_telnet_console(eut1.get("console_port"))
+    clines.eut_wait_login_promt(eut0_spawn)
+    clines.eut_wait_login_promt(eut1_spawn)
 
     # Init Step 4: start linuxchans VMs. Hostname for linuxchans configure via grub menu, so after start
     # immediately connect to VMs and init pexpect spawn
@@ -91,5 +95,30 @@ def init():
 
 @pytest.mark.end_to_end_routing_smoke
 def test_routing_smoke():
+    clines.information_log('Configuration client: {}'.format(linuxchan_names[0]))
     clines.linuxchan_get_shell(linuxchan_names[0], linuxchan0_spawn)
+    clines.linuxchan_set_ip('eth0', '10.0.0.2/24', linuxchan0_spawn)
+    clines.linuxchan_default_gw ('10.0.0.1', linuxchan0_spawn)
+
+    clines.information_log('Configuration client: {}'.format(linuxchan_names[1]))
     clines.linuxchan_get_shell(linuxchan_names[1], linuxchan1_spawn)
+    clines.linuxchan_set_ip('eth0', '10.0.1.2/24', linuxchan1_spawn)
+    clines.linuxchan_default_gw ('10.0.1.1', linuxchan1_spawn)
+
+    clines.information_log('Configuration EUT: {}'.format(eut_names[0]))
+    clines.eut_admin_send_raw_command('set interfaces ethernet eth0 address 192.0.1.1/30', eut0_spawn)
+    clines.eut_admin_send_raw_command('set interfaces ethernet eth1 address 10.0.0.1/24', eut0_spawn)
+    clines.eut_admin_send_raw_command('set protocols static route 10.0.1.0/24 next-hop 192.0.1.2', eut0_spawn)
+    clines.eut_admin_send_raw_command('commit', eut0_spawn)
+
+    clines.information_log('Configuration EUT: {}'.format(eut_names[1]))
+    clines.eut_admin_send_raw_command('set interfaces ethernet eth0 address 192.0.1.2/30', eut1_spawn)
+    clines.eut_admin_send_raw_command('set interfaces ethernet eth1 address 10.0.1.1/24', eut1_spawn)
+    clines.eut_admin_send_raw_command('set protocols static route 10.0.0.0/24 next-hop 192.0.1.1', eut1_spawn)
+    clines.eut_admin_send_raw_command('commit', eut1_spawn)
+
+    clines.information_log('End to end tests start:')
+    clines.information_log('Ping from {} to {}'.format(linuxchan_names[0], linuxchan_names[1]))
+    clines.linuxchan_ping( '10.0.1.2', linuxchan0_spawn)
+    clines.information_log('Ping from {} to {}'.format(linuxchan_names[1], linuxchan_names[0]))
+    clines.linuxchan_ping( '10.0.0.2', linuxchan1_spawn)

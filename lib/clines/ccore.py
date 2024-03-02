@@ -13,6 +13,7 @@ eut_login = configs.env.EUT_LOGIN
 eut_password = configs.env.EUT_PASSWORD
 linuxchan_login = configs.env.LINUXCHAN_LOGIN
 linuxchan_password = configs.env.LINUXCHAN_PASSWORD
+linuxchan_general_promt = 'root@[a-z]+:~#'
 eut_hostname = 'vyos'
 eut_login_promt = 'login: ' + endline_char
 eut_password_promt = 'Password: ' + endline_char
@@ -37,6 +38,7 @@ eut_exit_cmd = 'exit'
 
 def attach_to_cli_vm_telnet_console(port):
     return attach_to_cli_raw(configs.env.CONSOLE_TEMPLATE.format(configs.env.ENVIRONMENT_IP, port))
+
 
 def attach_to_cli_raw(command):
     #spawn = pexpect.spawnu(command, timeout=270, encoding='utf-8')
@@ -81,6 +83,29 @@ def linuxchan_get_shell(name, spawn):
     spawn.expect("root@" + name + r':~#')
 
 
+def linuxchan_set_ip(eth, address, spawn):
+    spawn.sendline('')
+    spawn.expect(linuxchan_general_promt)
+    spawn.sendline('ip addr add {} dev {}'.format(address, eth))
+    spawn.expect(linuxchan_general_promt)
+    spawn.sendline('ip link set up {}'.format(eth))
+    spawn.expect(linuxchan_general_promt)
+
+
+def linuxchan_default_gw(address, spawn):
+    spawn.sendline('')
+    spawn.expect(linuxchan_general_promt)
+    spawn.sendline('ip route add 0.0.0.0/0 via {}'.format(address))
+    spawn.expect(linuxchan_general_promt)
+
+
+def linuxchan_ping(address, spawn, interval_sec='0.002', quantity_packets='7'):
+    spawn.sendline('')
+    spawn.expect(linuxchan_general_promt)
+    spawn.sendline('ping {} -c{} -i0.002 '.format(address, quantity_packets, interval_sec))
+    spawn.expect(linuxchan_general_promt)
+
+
 def infra_get_shell(login, password, spawn):
     global infra_hostname
     infra_hostname = login
@@ -93,7 +118,6 @@ def infra_get_shell(login, password, spawn):
     spawn.expect('{}@{}{}$'.format( login, login, eut_operator_promt))
     spawn.sendline('')
     spawn.expect('{}@{}{}$'.format( login, login, eut_operator_promt))
-
 
 
 def run_infra_cmd(cmd, spawn):
@@ -111,6 +135,11 @@ def print_all(spawn):
     print('#####after:')
     print(spawn.after)
     print('#####:')
+
+
+def eut_wait_login_promt(spawn):
+    spawn.sendline('')
+    spawn.expect('vyos login: ')
 
 
 def eut_get_operator(spawn):
@@ -140,6 +169,12 @@ def eut_get_admin(spawn):
         eut_from_operator_to_admin(spawn)
 
 
+def eut_admin_send_raw_command(cmd, spawn, timeout=10):
+    eut_get_admin(spawn)
+    spawn.sendline(cmd)
+    spawn.expect(eut_admin_promt, timeout=timeout)
+
+
 def eut_from_operator_to_admin(spawn):
         spawn.sendline('configure')
         spawn.expect(eut_admin_promt)
@@ -151,5 +186,14 @@ def eut_operator_sudo(cmd, spawn):
 
 
 def eut_operator_send_raw_command(cmd, after_promt, spawn, timeout=10):
+    eut_get_operator(spawn)
     spawn.sendline(cmd)
     spawn.expect(after_promt, timeout=timeout)
+
+
+def information_log(log):
+    print()
+    print()
+    print(log)
+    print()
+    print()
