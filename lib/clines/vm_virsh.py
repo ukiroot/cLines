@@ -22,6 +22,10 @@ def start_vm(vm):
     system('sudo virsh start {}'.format(vm))
 
 
+def reset_vm(vm):
+    system('sudo virsh reset {}'.format(vm))
+
+
 def destroy_vm(vm):
     system('sudo virsh destroy ' + vm)
 
