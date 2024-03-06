@@ -1,7 +1,14 @@
 stages:
+  - CI
   - Preparation
   - Smoke
 
+pep8:
+  stage: CI
+  tags:
+    - localhost
+  script:
+    - pep8 -v ./tests/ ./lib/ || true
 
 Preparation-tests:
   stage: Preparation
