@@ -1,0 +1,43 @@
+stages:
+  - Preparation
+  - Smoke
+
+
+Preparation-tests:
+  stage: Preparation
+  tags:
+    - localhost
+  script:
+  - virtualenv -p python3 ci
+  - source ci/bin/activate
+  - pip install -r requirements.txt
+  - pytest
+      -v
+      -s
+      -l
+      -n4
+      -m "preparation_resources"
+  when:
+    manual
+  only:
+    - branches
+  except:
+    - master
+
+Smoke-test:
+  stage: Smoke
+  tags:
+    - localhost
+  script:
+    - pytest
+      -v
+      -s
+      -l
+      -n1
+      -m "end_to_end_routing_smoke"
+  when:
+    manual
+  only:
+    - branches
+  except:
+    - master
