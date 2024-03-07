@@ -28,7 +28,9 @@ LINUXCHCHAN=(
 function install_python_packages_via_apt {
 apt -y install \
     python3 \
-    python3-pip
+    python3-pip \
+    python3-virtualenv \
+    pep8
 }
 
 

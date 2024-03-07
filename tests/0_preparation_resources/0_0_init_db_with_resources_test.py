@@ -1,9 +1,10 @@
+import os
 import sqlite3
 import pytest
 
 @pytest.mark.preparation_resources
 def test_init_db_with_resources():
-    con = sqlite3.connect("/tmp/db.sqlite")
+    con = sqlite3.connect(os.path.join(os.path.expanduser("~"), ".db.sqlite"))
     cur = con.cursor()
     cur.executescript('''
 CREATE TABLE IF NOT EXISTS euts (
