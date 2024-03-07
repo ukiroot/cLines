@@ -2,7 +2,7 @@ import sys, os
 import sqlite3
 sys.path.append(os.path.join(os.path.dirname(__file__), "./"))
 
-con = sqlite3.connect("/tmp/db.sqlite")
+con = sqlite3.connect(os.path.join(os.path.expanduser("~"), ".db.sqlite"))
 cur = con.cursor()
 
 def get_bridges(qantity):
