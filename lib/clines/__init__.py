@@ -27,7 +27,7 @@ from .ccore import \
     eut_get_operator, \
     eut_get_admin, \
     eut_admin_send_raw_command, \
-    eut_operator_send_raw_command, \
+    eut_any_mode_raw_command, \
     eut_operator_promt, \
     linuxchan_grub, \
     linuxchan_get_shell, \
