@@ -36,7 +36,7 @@ mkdir -p "${DIR_CHROOT}"
 mount -v "${DISK_DEV}${DISK_DEV_SECTION}" "${DIR_CHROOT}"
 debootstrap --verbose --include=sudo,locales,nano,wget,ca-certificates,grub-pc --arch amd64 "${DEBIAN_VER}" "${DIR_CHROOT}" http://www.nic.funet.fi/debian/
 cat > "${DIR_CHROOT}/etc/fstab" << "EOF"
-/dev/sda1       /               ext4        defaults        0       1
+/dev/sda1       /               ext4        ro,noload        0       1
 EOF
 cat > "${DIR_CHROOT}/etc/apt/sources.list" << EOF
 deb https://www.nic.funet.fi/debian ${DEBIAN_VER} main contrib non-free-firmware
